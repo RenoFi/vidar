@@ -27,7 +27,19 @@ RSpec.describe Vidar::Config do
     it do
       expect(described_class.get("github")).to eq("RenoFi/vidar")
       expect(described_class.get("default_branch")).to eq("master")
-      expect { described_class.get("invalid") }.to raise_error(Vidar::MissingConfigError)
+      expect(described_class.get("invalid")).to eq(nil)
+    end
+  end
+
+  describe ".get!" do
+    before do
+      described_class.manifest_file = File.expand_path("./fixtures/vidar.yml", __dir__)
+    end
+
+    it do
+      expect(described_class.get!("github")).to eq("RenoFi/vidar")
+      expect(described_class.get!("default_branch")).to eq("master")
+      expect { described_class.get!("invalid") }.to raise_error(Vidar::MissingConfigError)
     end
   end
 end

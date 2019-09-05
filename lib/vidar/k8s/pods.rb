@@ -26,7 +26,7 @@ module Vidar
 
       def items
         @items ||= begin
-          output = `kubectl get pods -n #{Config.get(:namespace)} -o json`
+          output = `kubectl get pods -n #{Config.get!(:namespace)} -o json`
           json = JSON.parse(output.strip)
           json["items"] || []
         end

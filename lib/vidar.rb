@@ -9,6 +9,7 @@ require 'colorized_string'
 
 require 'vidar/version'
 require 'vidar/config'
+require 'vidar/interpolation'
 require 'vidar/log'
 require 'vidar/run'
 require 'vidar/slack_notification'

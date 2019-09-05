@@ -30,7 +30,13 @@ module Vidar
 
       def get(key)
         load unless loaded?
-        @data[key.to_s] || DEFAULT_OPTIONS[key.to_sym]&.call || fail(MissingConfigError, key)
+        value = @data[key.to_s] || DEFAULT_OPTIONS[key.to_sym]&.call
+        Vidar::Interpolation.call(value, self)
+      end
+
+      def get!(key)
+        load unless loaded?
+        get(key) || fail(MissingConfigError, key)
       end
     end
   end
