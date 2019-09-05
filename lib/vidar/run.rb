@@ -5,7 +5,7 @@ module Vidar
         system("docker #{command}") || exit(1)
       end
 
-      def docker_compose
+      def docker_compose(command)
         args = %w[revision current_branch].map { |arg| "#{arg.upcase}=#{Config.get(arg.to_sym)}" }
         system("#{args.join(' ')} docker-compose -f #{Config.get(:compose_file)} #{command}") || exit(1)
       end
