@@ -2,68 +2,123 @@ module Vidar
   class CLI < Thor
     include Thor::Shell
 
+    def self.exit_on_failure?
+      true
+    end
+
+    desc "run_runner", "Runs any given command in runner image"
+    option :command
+    def run_runner
+      Run.docker_compose("run runner #{options[:command]}") || exit(1)
+    end
+
     desc "pull", "Pulls existing docker images to leverage docker caching"
     def pull
-      log "Pulling #{Config.get(:image)} tags"
-      docker_command("pull #{Config.get(:image)}:builder-#{Config.get(:current_branch)} 2> /dev/null || true")
-      docker_command("pull #{Config.get(:image)}:builder 2> /dev/null || true")
-      docker_command("pull #{Config.get(:image)}:release 2> /dev/null || true")
-      log "Docker images:"
-      puts docker_command("images")
+      Log.info "Pulling #{Config.get(:image)} tags"
+      Run.docker "pull #{Config.get(:image)}:builder-#{Config.get(:current_branch)} 2> /dev/null || true"
+      Run.docker "pull #{Config.get(:image)}:builder 2> /dev/null || true"
+      Run.docker "pull #{Config.get(:image)}:release 2> /dev/null || true"
+      Log.info "Docker images:"
+      puts Run.docker "images"
     end
 
     desc "build", "Builds docker stages"
     def build
-      log "Building #{Config.get(:image)}:builder-#{Config.get(:current_branch)}"
-      docker_compose_command("build builder")
+      Log.info "Building #{Config.get(:image)}:builder-#{Config.get(:current_branch)}"
+      Run.docker_compose "build builder"
 
-      log "Building #{Config.get(:image)}:runner-#{Config.get(:current_branch)}"
-      docker_compose_command("build runner")
+      Log.info "Building #{Config.get(:image)}:runner-#{Config.get(:current_branch)}"
+      Run.docker_compose "build runner"
 
-      log "Building #{Config.get(:image)}:release"
-      docker_compose_command("build release")
+      Log.info "Building #{Config.get(:image)}:release"
+      Run.docker_compose "build release"
     end
 
     desc "cache", "Caches intermediate docker stages"
     def cache
-      log "Publish #{Config.get(:image)}:builder-#{Config.get(:current_branch)}"
-      docker_command("push #{Config.get(:image)}:builder-#{Config.get(:current_branch)}")
+      Log.info "Publish #{Config.get(:image)}:builder-#{Config.get(:current_branch)}"
+      Run.docker "push #{Config.get(:image)}:builder-#{Config.get(:current_branch)}"
     end
 
     desc "publish", "Publishes docker images on docker registry"
     def publish
-      log "Publish #{Config.get(:image)}:#{Config.get(:revision)}"
-      docker_command("tag #{Config.get(:image)}:release #{Config.get(:image)}:#{Config.get(:revision)}")
-      docker_command("push #{Config.get(:image)}:#{Config.get(:revision)}")
+      Log.info "Publish #{Config.get(:image)}:#{Config.get(:revision)}"
+      Run.docker "tag #{Config.get(:image)}:release #{Config.get(:image)}:#{Config.get(:revision)}"
+      Run.docker "push #{Config.get(:image)}:#{Config.get(:revision)}"
 
       return unless Config.get(:current_branch) == Config.get(:default_branch)
 
-      log "Publish #{Config.get(:image)}:builder"
-      docker_command("tag #{Config.get(:image)}:builder-#{Config.get(:current_branch)} #{Config.get(:image)}:builder")
-      docker_command("push #{Config.get(:image)}:builder")
+      Log.info "Publish #{Config.get(:image)}:builder"
+      Run.docker "tag #{Config.get(:image)}:builder-#{Config.get(:current_branch)} #{Config.get(:image)}:builder"
+      Run.docker "push #{Config.get(:image)}:builder"
 
-      log "Publish #{Config.get(:image)}:latest"
-      docker_command("tag #{Config.get(:image)}:release #{Config.get(:image)}:latest")
-      docker_command("push #{Config.get(:image)}:release")
-      docker_command("push #{Config.get(:image)}:latest")
+      Log.info "Publish #{Config.get(:image)}:latest"
+      Run.docker "tag #{Config.get(:image)}:release #{Config.get(:image)}:latest"
+      Run.docker "push #{Config.get(:image)}:release"
+      Run.docker "push #{Config.get(:image)}:latest"
     end
 
-    private
+    desc "deploy", "Performs k8s deployment with deploy hook"
+    method_option :revision, default: nil
+    def deploy
+      revision = options[:revision] || Config.get(:revision)
+      Log.info "Current cluster: #{Config.get(:cluster)} ###"
 
-    desc "log", "Prints out and colorize given text"
-    def log(text)
-      puts ColorizedString["### #{text} ".ljust(100, '#')].colorize(:green)
+      Log.info "Set kubectl image..."
+      Run.kubectl "set image deployments,cronjobs *=#{Config.get(:image)}:#{revision} --all"
+
+      Log.info "Looking for deploy hook..."
+      template_name, error, status = Open3.capture3 "kubectl get cronjob deploy-hook-template -n #{Config.get(:namespace)} -o name --ignore-not-found=true"
+
+      if status.success?
+        if template_name.to_s.empty?
+          Log.info "No deploy hook found"
+        else
+          Log.info "Executing deploy hook #{template_name.strip!}..."
+          Run.kubectl "delete job deploy-hook --ignore-not-found=true"
+          Run.kubectl "create job deploy-hook --from=#{template_name}"
+        end
+      else
+        Log.info "Error getting deploy hook template: #{error}"
+        exit(1)
+      end
     end
 
-    desc "docker_compose_command", "Runs docker-compose command with given command"
-    def docker_compose_command(command)
-      args = %w[revision current_branch].map { |arg| "#{arg.upcase}=#{Config.get(arg.to_sym)}" }
-      system("#{args.join(' ')} docker-compose -f #{Config.get(:compose_file)} #{command}") || exit(1)
-    end
+    desc "monitor_deploy_status", "Checks is deployment has finished and sends post-deploy notification"
+    def monitor_deploy_status
+      Log.info "Current cluster: #{Config.get(:cluster)} ###"
+      Log.info "Checking is all containers on #{Config.get(:cluster)} in #{Config.get(:namespace)} are ready..."
 
-    desc "run_docker", "Runs docker command with given command"
-    def docker_command(command)
-      system("docker #{command}") || exit(1)
+      sleep(2)
+      error = false
+      tries = 0
+      max_tries = 30
+      until K8s::Pods.new(Config.get(:namespace)).all_ready?
+        tries += 1
+        sleep(10)
+        if tries > max_tries
+          error = true
+          break
+        end
+      end
+
+      slack_notification = SlackNotification.new(
+        webhook_url:   Config.get(:slack_webhook_url),
+        github:        Config.get(:github),
+        revision:      Config.get(:revision),
+        revision_name: Config.get(:revision_name),
+        cluster:       Config.get(:cluster),
+        cluster_url:   Config.get(:cluster_url)
+      )
+
+      if error
+        Log.error "ERROR: Some of containers are not ready."
+        slack_notification.error
+        exit(1)
+      else
+        Log.info "OK: All containers are ready."
+        slack_notification.success
+      end
     end
   end
 end

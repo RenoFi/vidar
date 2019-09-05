@@ -8,14 +8,15 @@ module Vidar
       current_branch: -> { `git rev-parse --abbrev-ref HEAD`.strip.tr("/", "-") },
       revision:       -> { `git rev-parse HEAD`.strip },
       revision_name:  -> { `git show --pretty=format:"%s (%h)" -s HEAD`.strip },
+      cluster:        -> { `kubectl config current-context`.strip.split("_", 4)[-1] } # TODO improve context cleanup
     }.freeze
 
     class << self
       attr_reader :data
       attr_writer :manifest_file
 
-      def load(file = manifest_file)
-        @data = YAML.load_file(file)
+      def load(file_path = manifest_file)
+        @data = YAML.load_file(file_path)
         @loaded = true
       end
 
