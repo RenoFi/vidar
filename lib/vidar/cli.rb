@@ -57,9 +57,8 @@ module Vidar
 
     desc "docker_compose_command", "Runs docker-compose command with given command"
     def docker_compose_command(command)
-      system("REVISION=#{Config.get(:revision)}
-        BRANCH_NAME=#{Config.get(:current_branch)}
-        docker-compose -f #{Config.get(:compose_file)} #{command}") || exit(1)
+      args = %w[revision current_branch].map { |arg| "#{arg.upcase}=#{Config.get(arg.to_sym)}" }
+      system("#{args.join(' ')} docker-compose -f #{Config.get(:compose_file)} #{command}") || exit(1)
     end
 
     desc "run_docker", "Runs docker command with given command"
