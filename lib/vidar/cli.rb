@@ -84,6 +84,15 @@ module Vidar
       end
     end
 
+    desc "release", "Builds and publishes docker images"
+    def release
+      Log.info  "Release #{options[:image]}:#{options[:revision]}"
+      pull
+      build
+      cache
+      publish
+    end
+
     desc "monitor_deploy_status", "Checks is deployment has finished and sends post-deploy notification"
     def monitor_deploy_status
       Log.info "Current cluster: #{Config.get(:cluster)} ###"
