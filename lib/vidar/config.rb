@@ -8,7 +8,7 @@ module Vidar
       current_branch: -> { `git rev-parse --abbrev-ref HEAD`.strip.tr("/", "-") },
       revision:       -> { `git rev-parse HEAD`.strip },
       revision_name:  -> { `git show --pretty=format:"%s (%h)" -s HEAD`.strip },
-      cluster:        -> { `kubectl config current-context`.strip.split("_", 4)[-1] } # TODO improve context cleanup
+      cluster:        -> { `kubectl config current-context`.strip.split("_", 4)[-1] } # TODO: improve context cleanup
     }.freeze
 
     class << self

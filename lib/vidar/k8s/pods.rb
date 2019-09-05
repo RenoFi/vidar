@@ -6,9 +6,7 @@ module Vidar
       end
 
       def all_ready?
-        set_pods
-
-        if pods.empty?
+        if items.empty?
           Log.error "Could not fetch pod list"
           return false
         end
@@ -26,20 +24,17 @@ module Vidar
 
       attr_reader :pods, :namespace
 
-      def get_pods
-        output = `kubectl get pods -n #{Config.get(:namespace)} -o json`
-        json = JSON.parse(output.strip)
-        json["items"] || []
-      end
-
-      def set_pods
-        @pods = get_pods
+      def items
+        @items ||= begin
+          output = `kubectl get pods -n #{Config.get(:namespace)} -o json`
+          json = JSON.parse(output.strip)
+          json["items"] || []
+        end
       end
 
       def container_statuses
-        @container_statuses ||= pods.map { |i| i.dig("status", "containerStatuses") }.flatten.compact.map { |status| ContainerStatus.new(status) }
+        @container_statuses ||= items.map { |i| i.dig("status", "containerStatuses") }.flatten.compact.map { |status| ContainerStatus.new(status) }
       end
     end
   end
 end
-

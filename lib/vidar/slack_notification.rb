@@ -7,6 +7,7 @@ module Vidar
       @webhook_url = webhook_url
       @github = github
       @revision = revision
+      @revision_name = revision_name
       @cluster = cluster
       @cluster_url = cluster_url
     end
