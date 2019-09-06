@@ -8,7 +8,17 @@ module Vidar
       current_branch: -> { `git rev-parse --abbrev-ref HEAD`.strip.tr("/", "-") },
       revision:       -> { `git rev-parse HEAD`.strip },
       revision_name:  -> { `git show --pretty=format:"%s (%h)" -s HEAD`.strip },
-      cluster_name:   -> { `kubectl config current-context`.strip.split("_", 4)[-1] } # TODO: improve context cleanup
+      cluster_name:   -> {
+        cluster_names = get(:cluster_names).to_s
+        current_context = `kubectl config current-context`.strip
+
+        if cluster_names.empty?
+          current_context
+        else
+          names_in_context = current_context.scan(Regexp.new(cluster_names))
+          names_in_context.flatten.first || current_context
+        end
+      }
     }.freeze
 
     class << self
@@ -26,6 +36,16 @@ module Vidar
 
       def loaded?
         @loaded
+      end
+
+      def cluster_name
+        cluster_names = get(:cluster_names).to_s
+        current_context = `kubectl config current-context`.strip
+
+        return current_context if cluster_names.empty?
+
+        names_in_context = current_context.scan(Regexp.new(cluster_names))
+        names_in_context.flatten.first || current_context
       end
 
       def get(key)

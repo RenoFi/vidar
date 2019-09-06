@@ -15,4 +15,8 @@ RSpec.configure do |config|
   config.define_derived_metadata do |meta|
     meta[:aggregate_failures] = true
   end
+
+  config.before(:each) do
+    Vidar::Config.load(File.expand_path("./fixtures/vidar.yml", __dir__))
+  end
 end
