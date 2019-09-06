@@ -8,7 +8,7 @@ module Vidar
         fail ArgumentError, "getter must respond_to get." unless getter.respond_to?(:get)
 
         string.gsub(INTERPOLATION_PATTERN) do |match|
-          getter.get($1) || match
+          getter.get($1) || match # rubocop:disable Style/PerlBackrefs
         end
       end
     end
