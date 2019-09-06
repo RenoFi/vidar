@@ -3,32 +3,42 @@ module Vidar
     SUCCESS_COLOR = "good".freeze
     ERROR_COLOR = "danger".freeze
 
-    def initialize(webhook_url:, github:, revision:, revision_name:, cluster:, cluster_url:)
-      @webhook_url = webhook_url
-      @github = github
-      @revision = revision
+    def initialize(webhook_url:, github:, revision:, revision_name:, cluster_name:, cluster_url:)
+      @webhook_url   = webhook_url
+      @github        = github
+      @revision      = revision
       @revision_name = revision_name
-      @cluster = cluster
-      @cluster_url = cluster_url
+      @cluster_name  = cluster_name
+      @cluster_url   = cluster_url
+      @connection    = Faraday.new
+    end
+
+    def configured?
+      !webhook_url.to_s.empty?
     end
 
     def error
       message = "Failed deploy of #{github_link} to #{cluster_link} :fire: <!channel>"
-      perform data(message: message, color: ERROR_COLOR)
+      perform_with data(message: message, color: ERROR_COLOR)
     end
 
     def success
       message = "Successful deploy of #{github_link} to #{cluster_link}"
-      perform data(message: message, color: SUCCESS_COLOR)
+      perform_with data(message: message, color: SUCCESS_COLOR)
     end
 
-    def perform(data)
-      `curl -X POST -H "Content-type: application/json" --data '#{data}' '#{webhook_url}' 2>&1 /dev/null`
+    def perform_with(data)
+      p data
+      connection.post do |req|
+        req.url webhook_url
+        req.headers['Content-Type'] = 'application/json'
+        req.body = data.to_json
+      end
     end
 
     private
 
-    attr_reader :webhook_url, :github, :revision, :revision_name, :cluster, :cluster_url
+    attr_reader :webhook_url, :github, :revision, :revision_name, :cluster_name, :cluster_url, :connection
 
     def data(message:, color:)
       {
@@ -41,7 +51,7 @@ module Vidar
             "fallback": message
           }
         ]
-      }.to_json
+      }
     end
 
     def github_url
@@ -53,7 +63,7 @@ module Vidar
     end
 
     def cluster_link
-      "<#{cluster_url}|#{cluster}>"
+      "<#{cluster_url}|#{cluster_name}>"
     end
   end
 end

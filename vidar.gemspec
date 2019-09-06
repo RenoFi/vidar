@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.6'
 
   spec.add_dependency 'colorize'
+  spec.add_dependency 'faraday'
   spec.add_dependency 'thor', '~> 0.20'
 
   spec.add_development_dependency 'bundler'

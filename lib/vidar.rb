@@ -1,11 +1,11 @@
-require 'yaml'
 require 'json'
 require 'open3'
 require 'ostruct'
 require 'yaml'
 
-require 'thor'
 require 'colorized_string'
+require 'faraday'
+require 'thor'
 
 require 'vidar/version'
 require 'vidar/config'

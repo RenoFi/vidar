@@ -19,7 +19,7 @@ module Vidar
       Run.docker "pull #{Config.get!(:image)}:builder 2> /dev/null || true"
       Run.docker "pull #{Config.get!(:image)}:release 2> /dev/null || true"
       Log.info "Docker images:"
-      puts Run.docker "images"
+      Log.info Run.docker("images")
     end
 
     desc "build", "Builds docker stages"
@@ -62,7 +62,7 @@ module Vidar
     method_option :revision, default: nil
     def deploy
       revision = options[:revision] || Config.get!(:revision)
-      Log.info "Current cluster: #{Config.get!(:cluster)} ###"
+      Log.info "Current cluster_name: #{Config.get!(:cluster_name)} ###"
 
       Log.info "Set kubectl image..."
       Run.kubectl "set image deployments,cronjobs *=#{Config.get!(:image)}:#{revision} --all"
@@ -95,8 +95,8 @@ module Vidar
 
     desc "monitor_deploy_status", "Checks is deployment has finished and sends post-deploy notification"
     def monitor_deploy_status
-      Log.info "Current cluster: #{Config.get!(:cluster)} ###"
-      Log.info "Checking is all containers on #{Config.get!(:cluster)} in #{Config.get!(:namespace)} are ready..."
+      Log.info "Current cluster_name: #{Config.get!(:cluster_name)} ###"
+      Log.info "Checking is all containers on #{Config.get!(:cluster_name)} in #{Config.get!(:namespace)} are ready..."
 
       sleep(2)
       error = false
@@ -111,24 +111,22 @@ module Vidar
         end
       end
 
-      return unless Config.get(:slack_webhook_url)
-
       slack_notification = SlackNotification.new(
         webhook_url:   Config.get!(:slack_webhook_url),
         github:        Config.get!(:github),
         revision:      Config.get!(:revision),
         revision_name: Config.get!(:revision_name),
-        cluster:       Config.get!(:cluster),
+        cluster_name:  Config.get!(:cluster_name),
         cluster_url:   Config.get!(:cluster_url)
       )
 
       if error
         Log.error "ERROR: Some of containers are not ready."
-        slack_notification.error
+        slack_notification.error if slack_notification.configured?
         exit(1)
       else
         Log.info "OK: All containers are ready."
-        slack_notification.success
+        slack_notification.success if slack_notification.configured?
       end
     end
   end
