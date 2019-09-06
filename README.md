@@ -3,9 +3,7 @@
 
 # Vidar
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/vidar`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Vidar is a set of docker & k8s deployment tools based on thor gem
 
 ## Installation
 
@@ -23,24 +21,60 @@ Or install it yourself as:
 
     $ gem install vidar
 
+
+#### Requirements :
+
+* multistage `Dockerfile`, with 3 stages defined: `builder`, `runner`, `release`.
+* `docker-compose.ci.yml` file with defined services for all 3 stages
+* `vidar.yml` file to the project root directory, which following content:
+
+```yml
+# docker image name, required
+image: gcr.io/renofiinfrastructure/vidar 
+# k8s namespace, required
+namespace: borrower 
+# slack webhook url use to send deploy notifications, optional
+slack_webhook_url: https://hooks.slack.com/services/....../....../....../ 
+# github name used to conctruct slack notification content, required when slack_webhook_url is set
+github: RenoFi/vidar 
+# Cluster url, used to conctruct slack notification content.
+# Usually it displays k8 workloads filtered to current cluster and namespace. 
+# Similar to all other values it may contain references to others using mustache-like interpolation.
+# Required when slack_webhook_url is set
+cluster_url: "https://console.cloud.google.com/kubernetes/workload?cluster={{cluster_name}}&namespace={{namespace}}" 
+# known k8s cluster_names, used to construct regexp to fetch current cluster from kubectl context
+# Required when slack_webhook_url is set
+cluster_names: "cluster-A|cluster-B" cluster name from kubectl context
+# docker-compose file, optional, default value: docker-compose.ci.yml
+compose_file: docker-compose.ci.yml
+# default_branch, optional, default value: master
+compose_file: docker-compose.ci.yml
+```
+
 ## Usage
 
-TODO: Write usage instructions here
+Available commands are:
 
-## Development
+`vidar pull` - pulls existing docker images from repository to levarage docker caching and make build faster
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+`vidar build` - builds docker images
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+`vidar cache` - caches intermediate stages
+
+`vidar publish` - publishes docker images
+
+`vidar release` - a set of `pull`, `build`, `cache` and `publish`
+
+`vidar deploy` - deploys/applies release image with `REVISION` tag in given k8s namespace and cluster (unser the hood it's `kubectl set image` command). Before calling the command you must have `kubectl` context set. If you use GCP/GKE simply call `gcloud container clusters get-credentials you-cluser-name --zone=us-east4`. If you have `deploy-hook-template` job defined, it creates `deploy-hook` job with given `REVISION`.
+
+`vidar monitor_deploy_status` - monitors if all containers are up and running, if slack_webhook_url if defined, sends a noficiation (on both failure and success).
+
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/vidar. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/RenoFi/vidar. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
-## Code of Conduct
-
-Everyone interacting in the Vidar project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/vidar/blob/master/CODE_OF_CONDUCT.md).
