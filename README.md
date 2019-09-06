@@ -48,7 +48,7 @@ cluster_names: "cluster-A|cluster-B" cluster name from kubectl context
 # docker-compose file, optional, default value: docker-compose.ci.yml
 compose_file: docker-compose.ci.yml
 # default_branch, optional, default value: master
-compose_file: docker-compose.ci.yml
+default_branch: dev
 ```
 
 ## Usage
