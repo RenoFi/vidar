@@ -12,7 +12,7 @@ module Vidar
         end
 
         container_statuses.each do |container_status|
-          Log.info container_status.to_text
+          container_status.print
         end
 
         Log.info "-", "-"

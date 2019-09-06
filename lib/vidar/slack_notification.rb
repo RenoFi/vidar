@@ -28,7 +28,6 @@ module Vidar
     end
 
     def perform_with(data)
-      p data
       connection.post do |req|
         req.url webhook_url
         req.headers['Content-Type'] = 'application/json'

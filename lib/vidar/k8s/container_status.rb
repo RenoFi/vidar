@@ -16,6 +16,10 @@ module Vidar
         (ready? && running?) || terminated_completed?
       end
 
+      def print
+        puts to_text
+      end
+
       def to_text
         parts = ["Name: #{name}"] + text_statuses
         parts.map { |s| s.ljust(50, " ") }.join(" | ")
