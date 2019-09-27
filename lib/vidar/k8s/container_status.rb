@@ -1,11 +1,12 @@
 module Vidar
   module K8s
     class ContainerStatus
-      attr_reader :data, :state
+      attr_reader :data, :state, :namespace
 
       def initialize(data)
         @data = data
         @state = data["state"]
+        @namespace = data["namespace"]
       end
 
       def name
@@ -21,23 +22,26 @@ module Vidar
       end
 
       def to_text
-        parts = ["Name: #{name}"] + text_statuses
-        parts.map { |s| s.ljust(50, " ") }.join(" | ")
+        parts = []
+        parts << namespace.to_s.ljust(15, " ")
+        parts << name.to_s.ljust(25, " ")
+        parts += text_statuses.map { |s| s.ljust(40, " ") }
+        "| #{parts.join(' | ')} |"
       end
 
       def text_statuses
         if running?
           if ready?
-            [ColorizedString["Status: Ready & Running"].light_green, "Started at: #{running_started_at}"]
+            [ColorizedString["Ready & Running"].light_green, "Started at: #{running_started_at}"]
           else
-            [ColorizedString["Status: Not ready"].light_red, "Started at: #{running_started_at}"]
+            [ColorizedString["Not ready"].light_red, "Started at: #{running_started_at}"]
           end
         elsif terminated_completed?
-          [ColorizedString["Status: Terminated/Completed"].light_green, "Finished at: #{terminated_finished_at}"]
+          [ColorizedString["Terminated/Completed"].light_green, "Finished at: #{terminated_finished_at}"]
         elsif terminated_error?
-          [ColorizedString["Status: Terminated/Error"].light_red]
+          [ColorizedString["Terminated/Error"].light_red]
         elsif waiting?
-          [ColorizedString["Status: Waiting"].light_green]
+          [ColorizedString["Waiting"].light_green]
         else
           [ColorizedString[state.inspect].light_red]
         end

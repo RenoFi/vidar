@@ -11,11 +11,13 @@ module Vidar
           return false
         end
 
+        Log.line
+
         container_statuses.each do |container_status|
           container_status.print
         end
 
-        Log.info "-", "-"
+        Log.line
 
         container_statuses.all?(&:ok?)
       end
@@ -40,7 +42,16 @@ module Vidar
       end
 
       def container_statuses
-        @container_statuses ||= items.map { |i| i.dig("status", "containerStatuses") }.flatten.compact.map { |status| ContainerStatus.new(status) }
+        @container_statuses ||= container_statuses_data.map { |status| ContainerStatus.new(status) }
+      end
+
+      def container_statuses_data
+        items.map do |i|
+          namespace = i.dig("metadata", "namespace")
+          statuses = i.dig("status", "containerStatuses")
+          statuses.each { |s| s["namespace"] = namespace }
+          statuses
+        end.flatten.compact
       end
     end
   end

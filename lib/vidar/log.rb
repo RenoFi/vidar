@@ -1,6 +1,10 @@
 module Vidar
   class Log
     class << self
+      def line
+        puts "|" + "-" * 117 + "|"
+      end
+
       def info(text, fill_with = "#")
         puts ColorizedString["#{fill_with} #{text} ".ljust(100, fill_with)].colorize(:light_green)
       end
