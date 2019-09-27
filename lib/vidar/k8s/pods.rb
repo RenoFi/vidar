@@ -48,10 +48,10 @@ module Vidar
       def container_statuses_data
         items.map do |i|
           namespace = i.dig("metadata", "namespace")
-          statuses = i.dig("status", "containerStatuses")
+          statuses = i.dig("status", "containerStatuses") || []
           statuses.each { |s| s["namespace"] = namespace }
           statuses
-        end.flatten.compact
+        end.compact
       end
     end
   end
