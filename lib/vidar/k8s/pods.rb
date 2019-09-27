@@ -22,13 +22,20 @@ module Vidar
 
       private
 
-      attr_reader :pods, :namespace
+      attr_reader :namespace
 
       def items
         @items ||= begin
-          output = `kubectl get pods -n #{Config.get!(:namespace)} -o json`
-          json = JSON.parse(output.strip)
+          json = JSON.parse(kubectl_get.strip)
           json["items"] || []
+        end
+      end
+
+      def kubectl_get
+        if namespace == 'all'
+          `kubectl get pods --all-namespaces -o json`
+        else
+          `kubectl get pods -n #{namespace} -o json`
         end
       end
 
