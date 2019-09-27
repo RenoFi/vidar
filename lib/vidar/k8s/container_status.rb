@@ -23,7 +23,7 @@ module Vidar
 
       def to_text
         parts = []
-        parts << namespace.to_s.ljust(15, " ")
+        parts << namespace.to_s.ljust(20, " ")
         parts << name.to_s.ljust(25, " ")
         parts += text_statuses.map { |s| s.ljust(40, " ") }
         "| #{parts.join(' | ')} |"
