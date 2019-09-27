@@ -51,7 +51,7 @@ module Vidar
           statuses = i.dig("status", "containerStatuses") || []
           statuses.each { |s| s["namespace"] = namespace }
           statuses
-        end.compact
+        end.flatten
       end
     end
   end
