@@ -75,6 +75,11 @@ module Vidar
           Run.kubectl "delete job deploy-hook --ignore-not-found=true"
           Run.kubectl "kubectl set image cronjobs #{template_name}=#{Config.get!(:image)}:#{revision} --all"
           Run.kubectl "create job deploy-hook --from=#{template_name}"
+
+          if Vidar::DeployStatus.new(namespace: Config.get!(:namespace), filter: template_name).error?
+            Log.info "Error running deploy hook template"
+            exit(1)
+          end
         end
       else
         Log.info "Error getting deploy hook template: #{error}"

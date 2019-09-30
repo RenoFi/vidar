@@ -4,10 +4,11 @@ module Vidar
     SLEEP = 10
     MAX_TRIES = 30
 
-    attr_reader :namespace
+    attr_reader :namespace, :filter
 
-    def initialize(namespace)
+    def initialize(namespace:, filter: nil)
       @namespace = namespace
+      @filter = filter
     end
 
     def error?
@@ -16,7 +17,7 @@ module Vidar
 
       sleep(INITIAL_SLEEP)
 
-      until K8s::Pods.new(namespace).all_ready?
+      until K8s::Pods.new(namespace: namespace, filter: filter).all_ready?
         tries += 1
         sleep(SLEEP)
         if tries > MAX_TRIES
