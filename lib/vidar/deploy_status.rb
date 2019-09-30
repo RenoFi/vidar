@@ -12,6 +12,7 @@ module Vidar
 
     def error?
       any_errors = false
+      tries = 0
 
       sleep(INITIAL_SLEEP)
 
