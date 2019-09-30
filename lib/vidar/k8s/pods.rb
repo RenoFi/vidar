@@ -13,9 +13,7 @@ module Vidar
 
         Log.line
 
-        container_statuses.each do |container_status|
-          container_status.print
-        end
+        container_statuses.each(&:print)
 
         Log.line
 

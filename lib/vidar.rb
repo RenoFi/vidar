@@ -15,6 +15,7 @@ require 'vidar/run'
 require 'vidar/slack_notification'
 require 'vidar/k8s/container_status'
 require 'vidar/k8s/pods'
+require 'vidar/deploy_status'
 require 'vidar/cli'
 
 module Vidar

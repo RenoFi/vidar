@@ -18,6 +18,11 @@ module Vidar
           names_in_context = current_context.scan(Regexp.new(cluster_names))
           names_in_context.flatten.first || current_context
         end
+      },
+      cluster_label:  -> {
+        labels = get(:cluster_labels) || {}
+        name = get(:cluster_name)
+        labels[name] || name
       }
     }.freeze
 
@@ -38,19 +43,12 @@ module Vidar
         @loaded
       end
 
-      def cluster_name
-        cluster_names = get(:cluster_names).to_s
-        current_context = `kubectl config current-context`.strip
-
-        return current_context if cluster_names.empty?
-
-        names_in_context = current_context.scan(Regexp.new(cluster_names))
-        names_in_context.flatten.first || current_context
-      end
-
       def get(key)
         load unless loaded?
         value = @data[key.to_s] || DEFAULT_OPTIONS[key.to_sym]&.call
+
+        return value unless value.is_a?(String)
+
         Vidar::Interpolation.call(value, self)
       end
 

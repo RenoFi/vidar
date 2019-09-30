@@ -94,39 +94,32 @@ module Vidar
     end
 
     desc "monitor_deploy_status", "Checks is deployment has finished and sends post-deploy notification"
+    method_option :success_color, required: false
+    method_option :error_color, required: false
     def monitor_deploy_status
       Log.info "Current cluster_name: #{Config.get!(:cluster_name)} ###"
       Log.info "Checking is all containers on #{Config.get!(:cluster_name)} in #{Config.get!(:namespace)} are ready..."
-
-      sleep(2)
-      error = false
-      tries = 0
-      max_tries = 30
-      until K8s::Pods.new(Config.get!(:namespace)).all_ready?
-        tries += 1
-        sleep(10)
-        if tries > max_tries
-          error = true
-          break
-        end
-      end
 
       slack_notification = SlackNotification.new(
         webhook_url:   Config.get!(:slack_webhook_url),
         github:        Config.get!(:github),
         revision:      Config.get!(:revision),
         revision_name: Config.get!(:revision_name),
-        cluster_name:  Config.get!(:cluster_name),
-        cluster_url:   Config.get!(:cluster_url)
+        cluster_label: Config.get!(:cluster_label),
+        cluster_url:   Config.get!(:cluster_url),
+        success_color: options[:success_color],
+        error_color:   options[:error_color],
       )
 
-      if error
+      ok = Vidar::DeployStatus.new(Config.get!(:namespace)).ok?
+
+      if ok
+        Log.info "OK: All containers are ready."
+        slack_notification.success if slack_notification.configured?
+      else
         Log.error "ERROR: Some of containers are not ready."
         slack_notification.error if slack_notification.configured?
         exit(1)
-      else
-        Log.info "OK: All containers are ready."
-        slack_notification.success if slack_notification.configured?
       end
     end
   end
