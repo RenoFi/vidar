@@ -64,9 +64,6 @@ module Vidar
       revision = options[:revision] || Config.get!(:revision)
       Log.info "Current cluster_name: #{Config.get!(:cluster_name)} ###"
 
-      Log.info "Set kubectl image..."
-      Run.kubectl "set image deployments,cronjobs *=#{Config.get!(:image)}:#{revision} --all"
-
       Log.info "Looking for deploy hook..."
       template_name, error, status = Open3.capture3 "kubectl get cronjob deploy-hook-template -n #{Config.get!(:namespace)} -o name --ignore-not-found=true"
 
@@ -76,12 +73,16 @@ module Vidar
         else
           Log.info "Executing deploy hook #{template_name.strip!}..."
           Run.kubectl "delete job deploy-hook --ignore-not-found=true"
+          Run.kubectl "kubectl set image cronjobs #{template_name}=#{Config.get!(:image)}:#{revision} --all"
           Run.kubectl "create job deploy-hook --from=#{template_name}"
         end
       else
         Log.info "Error getting deploy hook template: #{error}"
         exit(1)
       end
+
+      Log.info "Set kubectl image..."
+      Run.kubectl "set image deployments,cronjobs *=#{Config.get!(:image)}:#{revision} --all"
     end
 
     desc "release", "Builds and publishes docker images"
