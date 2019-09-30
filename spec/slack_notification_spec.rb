@@ -8,7 +8,7 @@ RSpec.describe Vidar::SlackNotification do
       github:        "RenoFi/vidar",
       revision:      "059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd",
       revision_name: "Release 1.0.0",
-      cluster_name:  "staging",
+      cluster_label: "staging",
       cluster_url:   "https://console.cloud.google.com/kubernetes/workload",
     )
   end
