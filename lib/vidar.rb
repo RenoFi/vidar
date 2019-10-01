@@ -14,7 +14,7 @@ require 'vidar/log'
 require 'vidar/run'
 require 'vidar/slack_notification'
 require 'vidar/k8s/container_status'
-require 'vidar/k8s/pods'
+require 'vidar/k8s/pod_set'
 require 'vidar/deploy_status'
 require 'vidar/cli'
 

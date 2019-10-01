@@ -1,20 +1,31 @@
 module Vidar
   module K8s
     class ContainerStatus
-      attr_reader :data, :state, :namespace
+      JOB_KIND = "Job".freeze
+
+      attr_reader :data, :state, :namespace, :kind
 
       def initialize(data)
-        @data = data
-        @state = data["state"]
+        @data      = data
+        @state     = data["state"]
         @namespace = data["namespace"]
+        @kind      = data["kind"]
       end
 
       def name
         data["name"]
       end
 
-      def ok?
-        (ready? && running?) || terminated_completed?
+      def deployed?
+        return terminated? if job?
+
+        ready? && running?
+      end
+
+      def success?
+        return terminated_completed? if job?
+
+        ready? && running?
       end
 
       def print
@@ -37,13 +48,13 @@ module Vidar
             [ColorizedString["Not ready"].light_red, "Started at: #{running_started_at}"]
           end
         elsif terminated_completed?
-          [ColorizedString["Terminated/Completed"].light_green, "Finished at: #{terminated_finished_at}"]
+          [ColorizedString["Terminated/Completed"].light_green, terminated_finished_at ? "Finished at: #{terminated_finished_at}" : ""]
         elsif terminated_error?
-          [ColorizedString["Terminated/Error"].light_red]
+          [ColorizedString["Terminated/Error"].light_red, ""]
         elsif waiting?
-          [ColorizedString["Waiting"].light_green]
+          [ColorizedString["Waiting"].light_green, ""]
         else
-          [ColorizedString[state.inspect].light_red]
+          [ColorizedString[state.inspect].light_red, ""]
         end
       end
 
@@ -63,6 +74,10 @@ module Vidar
         state.dig("running", "startedAt")
       end
 
+      def terminated?
+        !state["terminated"].nil?
+      end
+
       def terminated_completed?
         state.dig("terminated", "reason") == "Completed" || state.dig("terminated", "exitCode") == 0
       end
@@ -73,6 +88,10 @@ module Vidar
 
       def terminated_error?
         state.dig("terminated", "reason") == "Error" || state.dig("terminated", "exitCode")
+      end
+
+      def job?
+        kind == JOB_KIND
       end
     end
   end
