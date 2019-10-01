@@ -90,7 +90,6 @@ module Vidar
       end
 
       Log.info "Set kubectl image..."
-      9e35389d03c032ab0bd0d319e94ed5af8d7a359d
       Run.kubectl "set image deployments,cronjobs *=#{Config.get!(:image)}:#{revision} --all"
     end
 
