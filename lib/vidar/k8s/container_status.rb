@@ -42,7 +42,9 @@ module Vidar
 
       def text_statuses
         if running?
-          if ready?
+          if job?
+            [ColorizedString["Running"].light_yellow, "Started at: #{running_started_at}"]
+          elsif ready?
             [ColorizedString["Ready & Running"].light_green, "Started at: #{running_started_at}"]
           else
             [ColorizedString["Not ready"].light_red, "Started at: #{running_started_at}"]
@@ -52,7 +54,7 @@ module Vidar
         elsif terminated_error?
           [ColorizedString["Terminated/Error"].light_red, ""]
         elsif waiting?
-          [ColorizedString["Waiting"].light_green, ""]
+          [ColorizedString["Waiting"].light_yellow, ""]
         else
           [ColorizedString[state.inspect].light_red, ""]
         end
