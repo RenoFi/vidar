@@ -73,7 +73,7 @@ module Vidar
         else
           Log.info "Executing deploy hook #{template_name.strip!}..."
           Run.kubectl "delete job deploy-hook --ignore-not-found=true"
-          Run.kubectl "set image cronjobs deploy-hook-template=#{Config.get!(:image)}:#{revision} --all"
+          Run.kubectl "set image cronjobs/deploy-hook-template deploy-hook-template=#{Config.get!(:image)}:#{revision} --all"
           Run.kubectl "create job deploy-hook --from=#{template_name}"
 
           deploy_status = Vidar::DeployStatus.new(namespace: Config.get!(:namespace), filter: "deploy-hook")
@@ -90,6 +90,7 @@ module Vidar
       end
 
       Log.info "Set kubectl image..."
+      9e35389d03c032ab0bd0d319e94ed5af8d7a359d
       Run.kubectl "set image deployments,cronjobs *=#{Config.get!(:image)}:#{revision} --all"
     end
 
