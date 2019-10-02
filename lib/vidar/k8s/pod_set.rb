@@ -22,6 +22,8 @@ module Vidar
       end
 
       def success?
+        return false if container_statuses.empty?
+
         container_statuses.all?(&:success?)
       end
 
