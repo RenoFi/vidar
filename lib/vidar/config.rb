@@ -51,7 +51,10 @@ module Vidar
 
         return nil unless deployment
 
-        DeployConfig.new(deployment.transform_keys!(&:to_sym))
+        deployment.transform_keys!(&:to_sym)
+        deployment.transform_values! { |value| Vidar::Interpolation.call(value, self) }
+
+        DeployConfig.new(deployment)
       end
     end
   end
