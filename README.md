@@ -33,18 +33,22 @@ Or install it yourself as:
 image: gcr.io/renofiinfrastructure/vidar 
 # k8s namespace, required
 namespace: borrower 
-# slack webhook url use to send deploy notifications, optional
-slack_webhook_url: https://hooks.slack.com/services/....../....../....../ 
-# github name used to conctruct slack notification content, required when slack_webhook_url is set
+# github name used to build deployment notification content
 github: RenoFi/vidar 
-# Cluster url, used to conctruct slack notification content.
-# Usually it displays k8 workloads filtered to current cluster and namespace. 
-# Similar to all other values it may contain references to others using mustache-like interpolation.
-# Required when slack_webhook_url is set
-cluster_url: "https://console.cloud.google.com/kubernetes/workload?cluster={{cluster_name}}&namespace={{namespace}}" 
-# known k8s cluster_names, used to construct regexp to fetch current cluster from kubectl context
-# Required when slack_webhook_url is set
-cluster_names: "cluster-A|cluster-B" cluster name from kubectl context
+# deployments config per kubectl context, required for `monitor_deploy_status` command 
+deployments:
+  gke_project_us-east4_staging:
+    # Deployment Name
+    name: staging cluster
+    # Color of successful notification, default value: 008800
+    success_color: "00ff00"
+    # Color of failed notification, default value: ff1100
+    failure_color: "ff0000"
+    # Deployment url, e.g. url to gke cluster workloads filtered by namespace
+    # Similar to all other values it may contain references to others using mustache-like interpolation.
+    url: "https://console.cloud.google.com/kubernetes/workload?project=project&namespace={{namespace}}"
+    # Slack webhook url use to send deploy notifications, optional
+    slack_webhook_url: https://hooks.slack.com/services/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
 # docker-compose file, optional, default value: docker-compose.ci.yml
 compose_file: docker-compose.ci.yml
 # default_branch, optional, default value: master

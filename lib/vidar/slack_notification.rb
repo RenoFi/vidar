@@ -1,27 +1,14 @@
 module Vidar
   class SlackNotification
-    SUCCESS_COLOR = "good".freeze
-    ERROR_COLOR = "danger".freeze
-
-    def initialize(
-      webhook_url:,
-      github:,
-      revision:,
-      revision_name:,
-      cluster_label:,
-      cluster_url:,
-      success_color: nil,
-      error_color: nil
-    )
-
-      @webhook_url     = webhook_url
+    def initialize(github:, revision:, revision_name:, deploy_config:)
       @github          = github
       @revision        = revision
       @revision_name   = revision_name
-      @cluster_label   = cluster_label
-      @cluster_url     = cluster_url
-      @success_color   = success_color || SUCCESS_COLOR
-      @error_color     = error_color || ERROR_COLOR
+      @deploy_name     = deploy_config.name
+      @deploy_url      = deploy_config.url
+      @success_color   = deploy_config.success_color
+      @failure_color   = deploy_config.failure_color
+      @webhook_url     = deploy_config.slack_webhook_url
       @connection      = Faraday.new
     end
 
@@ -29,13 +16,13 @@ module Vidar
       !webhook_url.to_s.empty?
     end
 
-    def error
-      message = "Failed deploy of #{github_link} to #{cluster_link} :fire: <!channel>"
-      perform_with data(message: message, color: ERROR_COLOR)
+    def failure
+      message = "Failed deploy of #{github_link} to #{deploy_link} :fire: <!channel>"
+      perform_with data(message: message, color: failure_color)
     end
 
     def success
-      message = "Successful deploy of #{github_link} to #{cluster_link}"
+      message = "Successful deploy of #{github_link} to #{deploy_link}"
       perform_with data(message: message, color: success_color)
     end
 
@@ -49,10 +36,9 @@ module Vidar
 
     private
 
-    attr_reader :webhook_url, :github,
-      :revision, :revision_name,
-      :cluster_label, :cluster_url,
-      :success_color, :error_color,
+    attr_reader :github, :revision, :revision_name,
+      :deploy_name, :deploy_url, :webhook_url,
+      :success_color, :failure_color,
       :connection
 
     def data(message:, color:)
@@ -77,8 +63,8 @@ module Vidar
       "<#{github_url}|#{revision_name}>"
     end
 
-    def cluster_link
-      "<#{cluster_url}|#{cluster_label}>"
+    def deploy_link
+      "<#{deploy_url}|#{deploy_name}>"
     end
   end
 end

@@ -62,7 +62,7 @@ module Vidar
     method_option :revision, required: false
     def deploy
       revision = options[:revision] || Config.get!(:revision)
-      Log.info "Current cluster_name: #{Config.get!(:cluster_name)} ###"
+      Log.info "Current kubectl context: #{Config.get!(:kubectl_context)} ###"
 
       Log.info "Looking for deploy hook..."
       template_name, error, status = Open3.capture3 "kubectl get cronjob deploy-hook-template -n #{Config.get!(:namespace)} -o name --ignore-not-found=true"
@@ -103,21 +103,19 @@ module Vidar
     end
 
     desc "monitor_deploy_status", "Checks is deployment has finished and sends post-deploy notification"
-    method_option :success_color, required: false
-    method_option :error_color, required: false
     def monitor_deploy_status
-      Log.info "Current cluster_name: #{Config.get!(:cluster_name)}"
-      Log.info "Checking is all containers on #{Config.get!(:cluster_name)} in #{Config.get!(:namespace)} are ready..."
+      Log.info "Current kubectl context: #{Config.get!(:kubectl_context)} ###"
+      Log.info "Checking if all containers in #{Config.get!(:namespace)} namespace(s) are ready..."
+
+      deploy_config = Config.deploy_config
+
+      Log.error "ERROR: could not find deployment config for #{Config.get!(:kubectl_context)} context" unless deploy_config
 
       slack_notification = SlackNotification.new(
-        webhook_url:   Config.get(:slack_webhook_url),
         github:        Config.get!(:github),
         revision:      Config.get!(:revision),
         revision_name: Config.get!(:revision_name),
-        cluster_label: Config.get!(:cluster_label),
-        cluster_url:   Config.get!(:cluster_url),
-        success_color: options[:success_color],
-        error_color:   options[:error_color],
+        deploy_config: deploy_config
       )
 
       deploy_status = Vidar::DeployStatus.new(namespace: Config.get!(:namespace))
@@ -129,7 +127,7 @@ module Vidar
         slack_notification.success if slack_notification.configured?
       else
         Log.error "ERROR: Some of containers are errored or not ready"
-        slack_notification.error if slack_notification.configured?
+        slack_notification.failure if slack_notification.configured?
         exit(1)
       end
     end
