@@ -80,6 +80,7 @@ module Vidar
           deploy_status.wait_until_completed
 
           unless deploy_status.success?
+            Run.kubectl "describe job deploy-hook"
             Log.error "Error running deploy hook template"
             exit(1)
           end
