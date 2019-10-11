@@ -47,9 +47,10 @@ deployments:
     # Deployment url, e.g. url to gke cluster workloads filtered by namespace
     # Similar to all other values it may contain references to others using mustache-like interpolation.
     url: "https://console.cloud.google.com/kubernetes/workload?project=project&namespace={{namespace}}"
-    # Sentry webhook url use to send deploy notifications, optional
-    sentry_webhook_url: https://sentry.io/api/hooks/release/builtin/123/asdf
-    # Slack webhook url use to send deploy notifications, optional
+    # Sentry webhook url used to send deploy notifications 
+    # (make sure you use the exact url with trailing slash provided by sentry), optional
+    sentry_webhook_url: https://sentry.io/api/hooks/release/builtin/123/asdf/
+    # Slack webhook url used to send deploy notifications, optional
     slack_webhook_url: https://hooks.slack.com/services/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
 # docker-compose file, optional, default value: docker-compose.ci.yml
 compose_file: docker-compose.ci.yml
