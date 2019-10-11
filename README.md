@@ -30,12 +30,12 @@ Or install it yourself as:
 
 ```yml
 # docker image name, required
-image: gcr.io/renofiinfrastructure/vidar 
+image: gcr.io/renofiinfrastructure/vidar
 # k8s namespace, required
-namespace: borrower 
+namespace: borrower
 # github name used to build deployment notification content
-github: RenoFi/vidar 
-# deployments config per kubectl context, required for `monitor_deploy_status` command 
+github: RenoFi/vidar
+# deployments config per kubectl context, required for `monitor_deploy_status` command
 deployments:
   gke_project_us-east4_staging:
     # Deployment Name
@@ -47,6 +47,8 @@ deployments:
     # Deployment url, e.g. url to gke cluster workloads filtered by namespace
     # Similar to all other values it may contain references to others using mustache-like interpolation.
     url: "https://console.cloud.google.com/kubernetes/workload?project=project&namespace={{namespace}}"
+    # Sentry webhook url use to send deploy notifications, optional
+    sentry_webhook_url: https://sentry.io/api/hooks/release/builtin/123/asdf
     # Slack webhook url use to send deploy notifications, optional
     slack_webhook_url: https://hooks.slack.com/services/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
 # docker-compose file, optional, default value: docker-compose.ci.yml

@@ -119,6 +119,11 @@ module Vidar
         deploy_config: deploy_config
       )
 
+      sentry_notification = SentryNotification.new(
+        revision:      Config.get!(:revision),
+        deploy_config: deploy_config
+      )
+
       deploy_status = Vidar::DeployStatus.new(namespace: Config.get!(:namespace))
 
       deploy_status.wait_until_completed
@@ -126,6 +131,7 @@ module Vidar
       if deploy_status.success?
         Log.info "OK: All containers are ready"
         slack_notification.success if slack_notification.configured?
+        sentry_notification.call if sentry_notification.configured?
       else
         Log.error "ERROR: Some of containers are errored or not ready"
         slack_notification.failure if slack_notification.configured?

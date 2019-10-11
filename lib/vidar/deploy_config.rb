@@ -3,14 +3,17 @@ module Vidar
     SUCCESS_COLOR = "008800".freeze
     FAILURE_COLOR = "ff1100".freeze
 
-    attr_reader :name, :url, :success_color, :failure_color, :slack_webhook_url
+    attr_reader :name, :url, :success_color, :failure_color, :slack_webhook_url, :sentry_webhook_url
 
-    def initialize(name:, url:, slack_webhook_url:, success_color: SUCCESS_COLOR, failure_color: FAILURE_COLOR)
-      @name = name
-      @url = url
-      @success_color = success_color
-      @failure_color = failure_color
-      @slack_webhook_url = slack_webhook_url
+    def initialize(options)
+      @name = options.fetch(:name)
+      @url = options.fetch(:url)
+
+      @success_color = options.fetch(:success_color, SUCCESS_COLOR)
+      @failure_color = options.fetch(:failure_color, FAILURE_COLOR)
+
+      @slack_webhook_url = options[:slack_webhook_url]
+      @sentry_webhook_url = options[:sentry_webhook_url]
     end
   end
 end
