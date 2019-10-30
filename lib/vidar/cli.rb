@@ -6,27 +6,25 @@ module Vidar
       true
     end
 
-    desc "run_runner", "Runs any given command in runner image"
+    desc "exec", "Run any given command in given docker-compose target, default is 'runner'"
     option :command
-    def run_runner
+    option :target, default: "runner"
+    def exec
       Run.docker_compose("run runner #{options[:command]}") || exit(1)
     end
 
-    desc "pull", "Pulls existing docker images to leverage docker caching"
+    desc "pull", "Pull existing docker images to leverage docker caching"
     def pull
       Log.info "Pulling #{Config.get!(:image)} tags"
-      Run.docker "pull #{Config.get!(:image)}:builder-#{Config.get!(:current_branch)} 2> /dev/null || true"
-      Run.docker "pull #{Config.get!(:image)}:builder 2> /dev/null || true"
+      Run.docker "pull #{Config.get!(:image)}:runner-#{Config.get!(:current_branch)} 2> /dev/null || true"
+      Run.docker "pull #{Config.get!(:image)}:runner-#{Config.get!(:default_branch)} 2> /dev/null || true"
       Run.docker "pull #{Config.get!(:image)}:release 2> /dev/null || true"
       Log.info "Docker images:"
-      Log.info Run.docker("images")
+      Run.docker("images")
     end
 
     desc "build", "Builds docker stages"
     def build
-      Log.info "Building #{Config.get!(:image)}:builder-#{Config.get!(:current_branch)}"
-      Run.docker_compose "build builder"
-
       Log.info "Building #{Config.get!(:image)}:runner-#{Config.get!(:current_branch)}"
       Run.docker_compose "build runner"
 
@@ -36,11 +34,11 @@ module Vidar
 
     desc "cache", "Caches intermediate docker stages"
     def cache
-      Log.info "Publish #{Config.get!(:image)}:builder-#{Config.get!(:current_branch)}"
-      Run.docker "push #{Config.get!(:image)}:builder-#{Config.get!(:current_branch)}"
+      Log.info "Publish #{Config.get!(:image)}:runner-#{Config.get!(:current_branch)}"
+      Run.docker "push #{Config.get!(:image)}:runner-#{Config.get!(:current_branch)}"
     end
 
-    desc "publish", "Publishes docker images on docker registry"
+    desc "publish", "Publish docker images on docker registry"
     def publish
       Log.info "Publish #{Config.get!(:image)}:#{Config.get!(:revision)}"
       Run.docker "tag #{Config.get!(:image)}:release #{Config.get!(:image)}:#{Config.get!(:revision)}"
@@ -48,17 +46,13 @@ module Vidar
 
       return unless Config.get!(:current_branch) == Config.get!(:default_branch)
 
-      Log.info "Publish #{Config.get!(:image)}:builder"
-      Run.docker "tag #{Config.get!(:image)}:builder-#{Config.get!(:current_branch)} #{Config.get!(:image)}:builder"
-      Run.docker "push #{Config.get!(:image)}:builder"
-
       Log.info "Publish #{Config.get!(:image)}:latest"
       Run.docker "tag #{Config.get!(:image)}:release #{Config.get!(:image)}:latest"
       Run.docker "push #{Config.get!(:image)}:release"
       Run.docker "push #{Config.get!(:image)}:latest"
     end
 
-    desc "deploy", "Performs k8s deployment with deploy hook"
+    desc "deploy", "Perform k8s deployment with deploy hook"
     method_option :revision, required: false
     def deploy
       revision = options[:revision] || Config.get!(:revision)
@@ -94,7 +88,7 @@ module Vidar
       Run.kubectl "set image deployments,cronjobs *=#{Config.get!(:image)}:#{revision} --all"
     end
 
-    desc "release", "Builds and publishes docker images"
+    desc "release", "Build and publish docker images"
     def release
       Log.info "Release #{options[:image]}:#{options[:revision]}"
       pull
@@ -103,7 +97,7 @@ module Vidar
       publish
     end
 
-    desc "monitor_deploy_status", "Checks is deployment has finished and sends post-deploy notification"
+    desc "monitor_deploy_status", "Check is deployment has finished and sends post-deploy notification"
     def monitor_deploy_status
       Log.info "Current kubectl context: #{Config.get!(:kubectl_context)} ###"
       Log.info "Checking if all containers in #{Config.get!(:namespace)} namespace(s) are ready..."

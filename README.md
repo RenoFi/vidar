@@ -24,8 +24,8 @@ Or install it yourself as:
 
 #### Requirements :
 
-* multistage `Dockerfile`, with 3 stages defined: `builder`, `runner`, `release`.
-* `docker-compose.ci.yml` file with defined services for all 3 stages
+* multistage `Dockerfile`, with at least 2 stages defined: `runner`, `release`.
+* `docker-compose.ci.yml` file with defined services for all mentioned stages
 * `vidar.yml` file to the project root directory, which following content:
 
 ```yml
@@ -47,7 +47,7 @@ deployments:
     # Deployment url, e.g. url to gke cluster workloads filtered by namespace
     # Similar to all other values it may contain references to others using mustache-like interpolation.
     url: "https://console.cloud.google.com/kubernetes/workload?project=project&namespace={{namespace}}"
-    # Sentry webhook url used to send deploy notifications 
+    # Sentry webhook url used to send deploy notifications
     # (make sure you use the exact url with trailing slash provided by sentry), optional
     sentry_webhook_url: https://sentry.io/api/hooks/release/builtin/123/asdf/
     # Slack webhook url used to send deploy notifications, optional
