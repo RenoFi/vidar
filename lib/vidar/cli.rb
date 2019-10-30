@@ -46,6 +46,9 @@ module Vidar
 
       return unless Config.get!(:current_branch) == Config.get!(:default_branch)
 
+      Log.info "Publishing #{Config.get!(:image)}:runner"
+      Run.docker "push #{Config.get!(:image)}:runner"
+
       Log.info "Publishing #{Config.get!(:image)}:release"
       Run.docker "tag #{Config.get!(:image)}:release #{Config.get!(:image)}:latest"
       Run.docker "push #{Config.get!(:image)}:release"
