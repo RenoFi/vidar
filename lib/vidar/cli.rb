@@ -18,6 +18,7 @@ module Vidar
       Log.info "Pulling #{Config.get!(:image)} tags"
       Run.docker "pull #{Config.get!(:image)}:runner-#{Config.get!(:current_branch)} 2> /dev/null || true"
       Run.docker "pull #{Config.get!(:image)}:runner-#{Config.get!(:default_branch)} 2> /dev/null || true"
+      Run.docker "pull #{Config.get!(:image)}:runner 2> /dev/null || true"
       Run.docker "pull #{Config.get!(:image)}:release 2> /dev/null || true"
       Log.info "Docker images:"
       Run.docker("images")
@@ -47,6 +48,7 @@ module Vidar
       return unless Config.get!(:current_branch) == Config.get!(:default_branch)
 
       Log.info "Publishing #{Config.get!(:image)}:runner"
+      Run.docker "tag #{Config.get!(:image)}:runner-#{Config.get!(:current_branch)} #{Config.get!(:image)}:runner"
       Run.docker "push #{Config.get!(:image)}:runner"
 
       Log.info "Publishing #{Config.get!(:image)}:release"
