@@ -90,7 +90,7 @@ module Vidar
 
     desc "release", "Build and publish docker images"
     def release
-      Log.info "Release #{options[:image]}:#{options[:revision]}"
+      Log.info "Build and release #{Config.get!(:image)}:#{Config.get!(:revision)}"
       pull
       build
       cache
