@@ -14,17 +14,17 @@ module Vidar
 
         Log.line
 
-        container_statuses.each(&:print)
+        containers.each(&:print)
 
         Log.line
 
-        container_statuses.all?(&:deployed?)
+        containers.all?(&:deployed?)
       end
 
       def success?
-        return false if container_statuses.empty?
+        return false if containers.empty?
 
-        container_statuses.all?(&:success?)
+        containers.all?(&:success?)
       end
 
       def containers
