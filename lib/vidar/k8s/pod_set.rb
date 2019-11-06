@@ -27,6 +27,12 @@ module Vidar
         container_statuses.all?(&:success?)
       end
 
+      def containers
+        return all_containers unless filter
+
+        all_containers.select { |cs| cs.name.to_s.include?(filter) }
+      end
+
       private
 
       attr_reader :namespace, :filter
@@ -46,25 +52,25 @@ module Vidar
         end
       end
 
-      def container_statuses
-        return all_container_statuses unless filter
-
-        all_container_statuses.select { |cs| cs.name.to_s.include?(filter) }
+      def ready_and_running_containers
+        containers.select(&:ready_and_running?)
       end
 
-      def all_container_statuses
-        @all_container_statuses ||= container_statuses_data.map { |status| ContainerStatus.new(status) }
+      def all_containers
+        @all_containers ||= containers_data.map { |status| Container.new(status) }
       end
 
-      def container_statuses_data
+      def containers_data
         items.map do |i|
+          require 'ap'
           owner_references = i.dig("metadata", "ownerReferences") || []
           kind             = (owner_references[0] || {})["kind"]
           namespace        = i.dig("metadata", "namespace")
           statuses         = i.dig("status", "containerStatuses") || []
           statuses.each do |s|
             s["namespace"] = namespace
-            s["kind"] = kind
+            s["kind"]      = kind
+            s["pod_name"]  = i.dig("metadata", "name")
           end
           statuses
         end.flatten

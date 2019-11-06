@@ -76,6 +76,7 @@ Available commands are:
 
 `vidar monitor_deploy_status` - monitors if all containers are up and running, if slack_webhook_url if defined, sends a noficiation (on both failure and success).
 
+`vidar kube_exec --name=web --command='bin/console'` - execute given command (`/bin/ssh` by default) inside the first pod with given name (all pods by default).
 
 ## Contributing
 

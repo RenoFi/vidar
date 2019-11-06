@@ -1,15 +1,16 @@
 module Vidar
   module K8s
-    class ContainerStatus
+    class Container
       JOB_KIND = "Job".freeze
 
-      attr_reader :data, :state, :namespace, :kind
+      attr_reader :data, :state, :namespace, :kind, :pod_name
 
       def initialize(data)
         @data      = data
         @state     = data["state"]
         @namespace = data["namespace"]
         @kind      = data["kind"]
+        @pod_name  = data["pod_name"]
       end
 
       def name
@@ -25,6 +26,10 @@ module Vidar
       def success?
         return terminated_completed? if job?
 
+        ready_and_running?
+      end
+
+      def ready_and_running?
         ready? && running?
       end
 
@@ -94,6 +99,10 @@ module Vidar
 
       def job?
         kind == JOB_KIND
+      end
+
+      def istio?
+        name == "istio-proxy"
       end
     end
   end

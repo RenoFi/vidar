@@ -137,5 +137,32 @@ module Vidar
         exit(1)
       end
     end
+
+    desc "kube_exec", "Execute given command in running pod"
+    method_option :command, default: "/bin/sh"
+    method_option :name, required: false
+    def kube_exec
+      Log.info "Current kubectl context: #{Config.get!(:kubectl_context)}"
+
+      deploy_config = Config.deploy_config
+
+      Log.error "ERROR: could not find deployment config for #{Config.get!(:kubectl_context)} context" unless deploy_config
+
+      pod_set = K8s::PodSet.new(namespace: Config.get!(:namespace), filter: options[:name])
+      containers = pod_set.containers.select(&:ready_and_running?).reject(&:istio?)
+
+      if containers.empty?
+        name = options[:name] || 'any'
+        Log.error "No running containers found with *#{name}* name"
+        exit(1)
+      else
+        Log.info "Available containers:"
+        containers.each(&:print)
+        container = containers.first
+
+        Log.info "Running #{options[:command]} in #{container.pod_name}"
+        Run.kubectl("exec -it #{container.pod_name} -- #{options[:command]}")
+      end
+    end
   end
 end
