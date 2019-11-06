@@ -62,7 +62,6 @@ module Vidar
 
       def containers_data
         items.map do |i|
-          require 'ap'
           owner_references = i.dig("metadata", "ownerReferences") || []
           kind             = (owner_references[0] || {})["kind"]
           namespace        = i.dig("metadata", "namespace")
