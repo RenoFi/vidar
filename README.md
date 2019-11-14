@@ -51,7 +51,7 @@ deployments:
     # (make sure you use the exact url with trailing slash provided by sentry), optional
     sentry_webhook_url: https://sentry.io/api/hooks/release/builtin/123/asdf/
     # Slack webhook url used to send deploy notifications, optional
-    slack_webhook_url: https://hooks.slack.com/services/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
+    slack_webhook_url: https://hooks.slack.com/services/ASCKNZ0vug2R3Ydo/ASCKNZ0vug2R3Ydo/ASCKNZ0vug2R3Ydo
 # docker-compose file, optional, default value: docker-compose.ci.yml
 compose_file: docker-compose.ci.yml
 # default_branch, optional, default value: master
