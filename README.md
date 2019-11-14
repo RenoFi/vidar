@@ -56,6 +56,8 @@ deployments:
 compose_file: docker-compose.ci.yml
 # default_branch, optional, default value: master
 default_branch: dev
+# console_command, optional, default value: bin/console
+console_command: rake console
 ```
 
 ## Usage
@@ -77,6 +79,8 @@ Available commands are:
 `vidar monitor_deploy_status` - monitors if all containers are up and running, if slack_webhook_url if defined, sends a noficiation (on both failure and success).
 
 `vidar kube_exec --name=web --command='bin/console'` - execute given command (`/bin/ssh` by default) inside the first pod with given name (all pods by default).
+
+`vidar console --name=web` - execute console command (`bin/console` by default) inside the first pod with given name (all pods by default).
 
 ## Contributing
 
