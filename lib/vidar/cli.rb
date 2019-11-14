@@ -167,6 +167,7 @@ module Vidar
       invoke :kube_exec, name: options[:name], command: options[:command] || Config.get!(:kubectl_context)
     end
 
+    method_option :revision, required: false
     desc "notify_sentry", "Notify sentry about current release"
     def notify_sentry
       sentry_notification = SentryNotification.new(
