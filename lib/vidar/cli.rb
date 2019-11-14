@@ -138,7 +138,7 @@ module Vidar
       end
     end
 
-    desc "kube_exec", "Execute given command in running pod"
+    desc "kube_exec", "Execute given command in the first running pod"
     method_option :command, default: "/bin/sh"
     method_option :name, required: false
     def kube_exec
@@ -163,6 +163,13 @@ module Vidar
         Log.info "Running #{options[:command]} in #{container.pod_name}"
         Run.kubectl("exec -it #{container.pod_name} -- #{options[:command]}")
       end
+    end
+
+    desc "console", "Execute console command in the first running pod"
+    method_option :command, required: false
+    method_option :name, required: false
+    def console
+      invoke :kube_exec, name: options[:name], command: options[:command] || Config.get!(:kubectl_context)
     end
   end
 end
