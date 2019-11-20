@@ -164,7 +164,7 @@ module Vidar
     method_option :command, required: false
     method_option :name, required: false
     def console
-      invoke :kube_exec, name: options[:name], command: options[:command] || Config.get!(:kubectl_context)
+      invoke :kube_exec, name: options[:name], command: options[:command] || Config.get!(:console_command)
     end
 
     method_option :revision, required: false

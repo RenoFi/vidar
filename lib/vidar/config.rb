@@ -31,6 +31,7 @@ module Vidar
 
       def get(key)
         load unless loaded?
+
         value = @data[key.to_s] || DEFAULT_OPTIONS[key.to_sym]&.call
 
         return value unless value.is_a?(String)
@@ -39,7 +40,6 @@ module Vidar
       end
 
       def get!(key)
-        load unless loaded?
         get(key) || fail(MissingConfigError, key)
       end
 
