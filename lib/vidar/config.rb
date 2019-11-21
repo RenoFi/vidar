@@ -9,6 +9,7 @@ module Vidar
       revision:        -> { `git rev-parse HEAD`.strip },
       revision_name:   -> { `git show --pretty=format:"%s (%h)" -s HEAD`.strip },
       kubectl_context: -> { `kubectl config current-context`.strip },
+      shell_command:   -> { "/bin/sh" },
       console_command: -> { "bin/console" },
     }.freeze
 

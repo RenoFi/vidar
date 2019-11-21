@@ -134,7 +134,7 @@ module Vidar
     end
 
     desc "kube_exec", "Execute given command in the first running pod"
-    method_option :command, default: "/bin/sh"
+    method_option :command
     method_option :name, required: false
     def kube_exec
       Log.info "Current kubectl context: #{Config.get!(:kubectl_context)}"
@@ -164,7 +164,14 @@ module Vidar
     method_option :command, required: false
     method_option :name, required: false
     def console
-      invoke :kube_exec, name: options[:name], command: options[:command] || Config.get!(:console_command)
+      invoke :kube_exec, [], name: options[:name], command: options[:command] || Config.get!(:console_command)
+    end
+
+    desc "ssh", "Execute shell command in the first running pod"
+    method_option :command, required: false
+    method_option :name, required: false
+    def ssh
+      invoke :kube_exec, [], name: options[:name], command: options[:command] || Config.get!(:shell_command)
     end
 
     method_option :revision, required: false
