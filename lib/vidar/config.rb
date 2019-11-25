@@ -11,6 +11,8 @@ module Vidar
       kubectl_context: -> { `kubectl config current-context`.strip },
       shell_command:   -> { "/bin/sh" },
       console_command: -> { "bin/console" },
+      base_stage_name: -> { "base" },
+      release_stage_name: -> { "release" },
     }.freeze
 
     class << self
@@ -57,6 +59,10 @@ module Vidar
         deployment.transform_values! { |value| Vidar::Interpolation.call(value, self) }
 
         DeployConfig.new(deployment)
+      end
+
+      def default_branch?
+        get!(:current_branch) == get!(:default_branch)
       end
     end
   end

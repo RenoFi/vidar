@@ -6,55 +6,61 @@ module Vidar
       true
     end
 
-    desc "exec", "Run any command in given docker-compose target, default target is `runner`"
+    desc "exec", "Run any command in given docker-compose target, default target is `base`"
     option :command
-    option :target, default: "runner"
+    option :target, required: false
     def exec
-      Run.docker_compose("run runner #{options[:command]}") || exit(1)
+      target = options[:target] || Config.get!(:base_stage_name)
+      Run.docker_compose("run #{target} #{options[:command]}") || exit(1)
     end
 
     desc "pull", "Pull existing docker images to leverage docker caching"
     def pull
       Log.info "Pulling #{Config.get!(:image)} tags"
-      Run.docker "pull #{Config.get!(:image)}:runner-#{Config.get!(:current_branch)} 2> /dev/null || true"
-      Run.docker "pull #{Config.get!(:image)}:runner-#{Config.get!(:default_branch)} 2> /dev/null || true"
-      Run.docker "pull #{Config.get!(:image)}:runner 2> /dev/null || true"
-      Run.docker "pull #{Config.get!(:image)}:release 2> /dev/null || true"
+      Run.docker "pull #{Config.get!(:image)}:#{Config.get!(:base_stage_name)}-#{Config.get!(:current_branch)} 2> /dev/null || true"
+      Run.docker "pull #{Config.get!(:image)}:#{Config.get!(:base_stage_name)}-#{Config.get!(:default_branch)} 2> /dev/null || true"
+      Run.docker "pull #{Config.get!(:image)}:#{Config.get!(:base_stage_name)} 2> /dev/null || true"
+      Run.docker "pull #{Config.get!(:image)}:#{Config.get!(:release_stage_name)} 2> /dev/null || true"
       Log.info "Docker images:"
       Run.docker("images")
     end
 
     desc "build", "Build docker stages"
     def build
-      Log.info "Building runner image"
-      Run.docker_compose "build runner"
+      Log.info "Building #{Config.get!(:base_stage_name)} image"
+      Run.docker_compose "build #{Config.get!(:base_stage_name)}"
 
-      Log.info "Building release image"
-      Run.docker_compose "build release"
+      Log.info "Building #{Config.get!(:release_stage_name)} image"
+      Run.docker_compose "build #{Config.get!(:release_stage_name)}"
     end
 
     desc "cache", "Caches intermediate docker stages"
     def cache
-      Log.info "Publishing runner image"
-      Run.docker "push #{Config.get!(:image)}:runner-#{Config.get!(:current_branch)}"
+      Log.info "Publishing #{Config.get!(:base_stage_name)} image"
+      Run.docker "push #{Config.get!(:image)}:#{Config.get!(:base_stage_name)}-#{Config.get!(:current_branch)}"
     end
 
     desc "publish", "Publish docker images on docker registry"
     def publish
-      Log.info "Publishing #{Config.get!(:image)}:#{Config.get!(:revision)}"
-      Run.docker "tag #{Config.get!(:image)}:release #{Config.get!(:image)}:#{Config.get!(:revision)}"
-      Run.docker "push #{Config.get!(:image)}:#{Config.get!(:revision)}"
+      base_image_tag     = "#{Config.get!(:image)}:#{Config.get!(:base_stage_name)}"
+      revision_image_tag = "#{Config.get!(:image)}:#{Config.get!(:revision)}"
+      release_image_tag  = "#{Config.get!(:image)}:#{Config.get!(:release_stage_name)}"
+      latest_image_tag   = "#{Config.get!(:image)}:latest}"
 
-      return unless Config.get!(:current_branch) == Config.get!(:default_branch)
+      Log.info "Publishing #{revision_image_tag}"
+      Run.docker "tag #{release_image_tag} #{revision_image_tag}"
+      Run.docker "push #{revision_image_tag}"
 
-      Log.info "Publishing #{Config.get!(:image)}:runner"
-      Run.docker "tag #{Config.get!(:image)}:runner-#{Config.get!(:current_branch)} #{Config.get!(:image)}:runner"
-      Run.docker "push #{Config.get!(:image)}:runner"
+      return unless Config.default_branch?
 
-      Log.info "Publishing #{Config.get!(:image)}:release"
-      Run.docker "tag #{Config.get!(:image)}:release #{Config.get!(:image)}:latest"
-      Run.docker "push #{Config.get!(:image)}:release"
-      Run.docker "push #{Config.get!(:image)}:latest"
+      Log.info "Publishing #{base_image_tag}"
+      Run.docker "tag #{base_image_tag}-#{Config.get!(:current_branch)} #{base_image_tag}"
+      Run.docker "push #{base_image_tag}"
+
+      Log.info "Publishing #{release_image_tag}"
+      Run.docker "tag #{release_image_tag} #{latest_image_tag}"
+      Run.docker "push #{release_image_tag}"
+      Run.docker "push #{latest_image_tag}"
     end
 
     desc "deploy", "Perform k8s deployment with deploy hook"
