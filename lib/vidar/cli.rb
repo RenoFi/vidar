@@ -45,7 +45,7 @@ module Vidar
       base_image_tag     = "#{Config.get!(:image)}:#{Config.get!(:base_stage_name)}"
       revision_image_tag = "#{Config.get!(:image)}:#{Config.get!(:revision)}"
       release_image_tag  = "#{Config.get!(:image)}:#{Config.get!(:release_stage_name)}"
-      latest_image_tag   = "#{Config.get!(:image)}:latest}"
+      latest_image_tag   = "#{Config.get!(:image)}:latest"
 
       Log.info "Publishing #{revision_image_tag}"
       Run.docker "tag #{release_image_tag} #{revision_image_tag}"
