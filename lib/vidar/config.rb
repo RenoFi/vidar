@@ -3,15 +3,15 @@ module Vidar
     DEFAULT_MANIFEST_FILE = "vidar.yml".freeze
 
     DEFAULT_OPTIONS = {
-      compose_file:    -> { "docker-compose.ci.yml" },
-      default_branch:  -> { "master" },
-      current_branch:  -> { `git rev-parse --abbrev-ref HEAD`.strip.tr("/", "-") },
-      revision:        -> { `git rev-parse HEAD`.strip },
-      revision_name:   -> { `git show --pretty=format:"%s (%h)" -s HEAD`.strip },
-      kubectl_context: -> { `kubectl config current-context`.strip },
-      shell_command:   -> { "/bin/sh" },
-      console_command: -> { "bin/console" },
-      base_stage_name: -> { "base" },
+      compose_file:       -> { "docker-compose.ci.yml" },
+      default_branch:     -> { "master" },
+      current_branch:     -> { `git rev-parse --abbrev-ref HEAD`.strip.tr("/", "-") },
+      revision:           -> { `git rev-parse HEAD`.strip },
+      revision_name:      -> { `git show --pretty=format:"%s (%h)" -s HEAD`.strip },
+      kubectl_context:    -> { `kubectl config current-context`.strip },
+      shell_command:      -> { "/bin/sh" },
+      console_command:    -> { "bin/console" },
+      base_stage_name:    -> { "base" },
       release_stage_name: -> { "release" },
     }.freeze
 

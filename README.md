@@ -24,7 +24,7 @@ Or install it yourself as:
 
 #### Requirements :
 
-* multistage `Dockerfile`, with at least 2 stages defined: `runner`, `release`.
+* multistage `Dockerfile`, with at least 2 stages defined: `base`, `release`.
 * `docker-compose.ci.yml` file with defined services for all mentioned stages
 * `vidar.yml` file to the project root directory, which following content:
 
