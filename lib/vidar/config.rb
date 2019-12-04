@@ -47,13 +47,14 @@ module Vidar
       end
 
       def deploy_config
-        deployments = get(:deployments) || {}
+        deployments = get(:deployments)
+        deployments = {} unless deployments.is_a?(Hash)
+        deployment  = deployments[get!(:kubectl_context)]
 
-        return nil unless deployments.is_a?(Hash)
-
-        deployment = deployments[get!(:kubectl_context)]
-
-        return nil unless deployment
+        if deployment.nil?
+          Log.error "ERROR: could not find deployment config for #{get!(:kubectl_context)} context"
+          return nil
+        end
 
         deployment.transform_keys!(&:to_sym)
         deployment.transform_values! { |value| Vidar::Interpolation.call(value, self) }

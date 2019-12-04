@@ -113,15 +113,11 @@ module Vidar
       Log.info "Current kubectl context: #{Config.get!(:kubectl_context)}"
       Log.info "Checking if all containers in #{Config.get!(:namespace)} namespace(s) are ready..."
 
-      deploy_config = Config.deploy_config
-
-      Log.error "ERROR: could not find deployment config for #{Config.get!(:kubectl_context)} context" unless deploy_config
-
       slack_notification = SlackNotification.new(
         github:        Config.get!(:github),
         revision:      Config.get!(:revision),
         revision_name: Config.get!(:revision_name),
-        deploy_config: deploy_config
+        deploy_config: Config.deploy_config
       )
 
       deploy_status = Vidar::DeployStatus.new(namespace: Config.get!(:namespace))
@@ -189,6 +185,19 @@ module Vidar
       )
 
       sentry_notification.call if sentry_notification.configured?
+    end
+
+    method_option :message, required: true
+    desc "notify_slack", "Send custom slack notification"
+    def notify_slack
+      slack_notification = SlackNotification.new(
+        github:        Config.get!(:github),
+        revision:      Config.get!(:revision),
+        revision_name: Config.get!(:revision_name),
+        deploy_config: Config.deploy_config
+      )
+
+      slack_notification.deliver(message: options[:message]) if slack_notification.configured?
     end
   end
 end

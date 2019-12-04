@@ -6,6 +6,7 @@ module Vidar
       @revision_name   = revision_name
       @deploy_name     = deploy_config.name
       @deploy_url      = deploy_config.url
+      @default_color   = deploy_config.default_color
       @success_color   = deploy_config.success_color
       @failure_color   = deploy_config.failure_color
       @webhook_url     = deploy_config.slack_webhook_url
@@ -26,6 +27,10 @@ module Vidar
       perform_with data(message: message, color: success_color)
     end
 
+    def deliver(message:, color: default_color)
+      perform_with data(message: message, color: color)
+    end
+
     def perform_with(data)
       connection.post do |req|
         req.url webhook_url
@@ -38,7 +43,7 @@ module Vidar
 
     attr_reader :github, :revision, :revision_name,
       :deploy_name, :deploy_url, :webhook_url,
-      :success_color, :failure_color,
+      :default_color, :success_color, :failure_color,
       :connection
 
     def data(message:, color:)
