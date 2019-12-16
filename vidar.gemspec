@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'colorize'
   spec.add_dependency 'faraday'
-  spec.add_dependency 'thor', '~> 0.20'
+  spec.add_dependency 'thor', '>= 0.20', '< 2.0'
 
   spec.add_development_dependency 'awesome_print'
   spec.add_development_dependency 'bundler'
