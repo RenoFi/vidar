@@ -20,12 +20,18 @@ module Vidar
       attr_writer :manifest_file
 
       def load(file_path = manifest_file)
+        ensure_file_exist!(file_path)
+
         @data = YAML.load_file(file_path)
         @loaded = true
       end
 
       def manifest_file
         @manifest_file || DEFAULT_MANIFEST_FILE
+      end
+
+      def ensure_file_exist!(file_path)
+        fail(MissingManifestFileError, file_path) unless File.exist?(file_path)
       end
 
       def loaded?

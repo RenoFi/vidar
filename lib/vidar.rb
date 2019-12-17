@@ -23,4 +23,5 @@ require 'vidar/cli'
 module Vidar
   Error = Class.new(StandardError)
   MissingConfigError = Class.new(StandardError)
+  MissingManifestFileError = Class.new(StandardError)
 end
