@@ -16,7 +16,7 @@ RSpec.configure do |config|
     meta[:aggregate_failures] = true
   end
 
-  config.before(:each) do
+  config.before do
     Vidar::Config.load(File.expand_path("./fixtures/vidar.yml", __dir__))
   end
 end

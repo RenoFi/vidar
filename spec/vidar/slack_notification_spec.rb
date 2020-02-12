@@ -1,14 +1,4 @@
 RSpec.describe Vidar::SlackNotification do
-
-  let(:webhook_url) { "https://slack.local/asdf1234" }
-
-  let(:deploy_config) do
-    Vidar::DeployConfig.new(
-      name: "staging",
-      url: "https://console.cloud.google.com/kubernetes/workload?namespace=foo",
-      slack_webhook_url: webhook_url)
-  end
-
   subject do
     described_class.new(
       github:        "RenoFi/vidar",
@@ -17,6 +7,15 @@ RSpec.describe Vidar::SlackNotification do
       build_url:     "https://ci.company.com/builds/123",
       deploy_config: deploy_config,
     )
+  end
+
+  let(:webhook_url) { "https://slack.local/asdf1234" }
+
+  let(:deploy_config) do
+    Vidar::DeployConfig.new(
+      name: "staging",
+      url: "https://console.cloud.google.com/kubernetes/workload?namespace=foo",
+      slack_webhook_url: webhook_url)
   end
 
   describe "#configured?" do
@@ -46,8 +45,11 @@ RSpec.describe Vidar::SlackNotification do
       }
     end
 
-    it do
+    before do
       expect(subject).to receive(:perform_with).with(expected_data)
+    end
+
+    specify do
       subject.failure
     end
   end
@@ -67,8 +69,11 @@ RSpec.describe Vidar::SlackNotification do
       }
     end
 
-    it do
+    before do
       expect(subject).to receive(:perform_with).with(expected_data)
+    end
+
+    specify do
       subject.success
     end
   end
