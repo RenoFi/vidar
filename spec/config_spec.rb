@@ -30,4 +30,34 @@ RSpec.describe Vidar::Config do
       expect { described_class.get!("invalid") }.to raise_error(Vidar::MissingConfigError)
     end
   end
+
+  describe '.build_url' do
+    subject { described_class.build_url }
+
+    specify { expect(subject).to eq nil }
+
+    context 'when build_url is defined in yaml' do
+      let(:env_key) { 'TRAVIS_BUILD_WEB_URL' }
+      let(:env_value) { nil }
+
+      before do
+        allow(described_class).to receive(:get).with(:build_env) { env_key }
+        allow(ENV).to receive(:[]).with(env_key) { env_value }
+      end
+
+      specify { expect(subject).to eq nil }
+
+      context 'when ENV[build_url] is set to a URL' do
+        let(:env_value) { 'https://ci.company.com/builds/123' }
+
+        specify { expect(subject).to eq env_value }
+      end
+
+      context 'when ENV[build_url] is set to a blank string' do
+        let(:env_value) { '' }
+
+        specify { expect(subject).to eq nil }
+      end
+    end
+  end
 end

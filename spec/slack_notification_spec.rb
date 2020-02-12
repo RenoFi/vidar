@@ -14,6 +14,7 @@ RSpec.describe Vidar::SlackNotification do
       github:        "RenoFi/vidar",
       revision:      "059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd",
       revision_name: "Release 1.0.0",
+      build_url:     "https://ci.company.com/builds/123",
       deploy_config: deploy_config,
     )
   end
@@ -38,8 +39,8 @@ RSpec.describe Vidar::SlackNotification do
             title: "RenoFi/vidar",
             title_link: "https://github.com/RenoFi/vidar/commit/059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd",
             color: "ff1100",
-            text: "Failed deploy of <https://github.com/RenoFi/vidar/commit/059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd|Release 1.0.0> to <https://console.cloud.google.com/kubernetes/workload?namespace=foo|staging> :fire: <!channel>", # rubocop:disable Metrics/LineLength
-            fallback: "Failed deploy of <https://github.com/RenoFi/vidar/commit/059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd|Release 1.0.0> to <https://console.cloud.google.com/kubernetes/workload?namespace=foo|staging> :fire: <!channel>" # rubocop:disable Metrics/LineLength
+            text: "Failed deploy of <https://github.com/RenoFi/vidar/commit/059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd|Release 1.0.0> to <https://console.cloud.google.com/kubernetes/workload?namespace=foo|staging> :fire: <!channel> <https://ci.company.com/builds/123|View the build on ci.company.com>", # rubocop:disable Metrics/LineLength
+            fallback: "Failed deploy of <https://github.com/RenoFi/vidar/commit/059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd|Release 1.0.0> to <https://console.cloud.google.com/kubernetes/workload?namespace=foo|staging> :fire: <!channel> <https://ci.company.com/builds/123|View the build on ci.company.com>" # rubocop:disable Metrics/LineLength
           }
         ]
       }
@@ -59,8 +60,8 @@ RSpec.describe Vidar::SlackNotification do
             title: "RenoFi/vidar",
             title_link: "https://github.com/RenoFi/vidar/commit/059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd",
             color: "008800",
-            text: "Successful deploy of <https://github.com/RenoFi/vidar/commit/059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd|Release 1.0.0> to <https://console.cloud.google.com/kubernetes/workload?namespace=foo|staging>", # rubocop:disable Metrics/LineLength
-            fallback: "Successful deploy of <https://github.com/RenoFi/vidar/commit/059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd|Release 1.0.0> to <https://console.cloud.google.com/kubernetes/workload?namespace=foo|staging>" # rubocop:disable Metrics/LineLength
+            text: "Successful deploy of <https://github.com/RenoFi/vidar/commit/059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd|Release 1.0.0> to <https://console.cloud.google.com/kubernetes/workload?namespace=foo|staging>. <https://ci.company.com/builds/123|View the build on ci.company.com>", # rubocop:disable Metrics/LineLength
+            fallback: "Successful deploy of <https://github.com/RenoFi/vidar/commit/059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd|Release 1.0.0> to <https://console.cloud.google.com/kubernetes/workload?namespace=foo|staging>. <https://ci.company.com/builds/123|View the build on ci.company.com>" # rubocop:disable Metrics/LineLength
           }
         ]
       }

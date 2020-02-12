@@ -1,9 +1,11 @@
 module Vidar
   class SlackNotification
-    def initialize(github:, revision:, revision_name:, deploy_config:)
+    def initialize(github:, revision:, revision_name:, deploy_config:, build_url: nil)
       @github          = github
       @revision        = revision
       @revision_name   = revision_name
+      @build_url       = build_url
+      @build_hostname  = URI(build_url || '').hostname
       @deploy_name     = deploy_config.name
       @deploy_url      = deploy_config.url
       @default_color   = deploy_config.default_color
@@ -18,12 +20,12 @@ module Vidar
     end
 
     def failure
-      message = "Failed deploy of #{github_link} to #{deploy_link} :fire: <!channel>"
+      message = "Failed deploy of #{github_link} to #{deploy_link} :fire: <!channel> #{build_link}"
       perform_with data(message: message, color: failure_color)
     end
 
     def success
-      message = "Successful deploy of #{github_link} to #{deploy_link}"
+      message = "Successful deploy of #{github_link} to #{deploy_link}. #{build_link}"
       perform_with data(message: message, color: success_color)
     end
 
@@ -44,7 +46,7 @@ module Vidar
     attr_reader :github, :revision, :revision_name,
       :deploy_name, :deploy_url, :webhook_url,
       :default_color, :success_color, :failure_color,
-      :connection
+      :connection, :build_url, :build_hostname
 
     def data(message:, color:)
       {
@@ -70,6 +72,10 @@ module Vidar
 
     def deploy_link
       "<#{deploy_url}|#{deploy_name}>"
+    end
+
+    def build_link
+      build_url && "<#{build_url}|View the build on #{build_hostname}>"
     end
   end
 end

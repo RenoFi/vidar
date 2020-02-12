@@ -117,6 +117,7 @@ module Vidar
         github:        Config.get!(:github),
         revision:      Config.get!(:revision),
         revision_name: Config.get!(:revision_name),
+        build_url:     Config.build_url,
         deploy_config: Config.deploy_config
       )
 
@@ -194,6 +195,7 @@ module Vidar
         github:        Config.get!(:github),
         revision:      Config.get!(:revision),
         revision_name: Config.get!(:revision_name),
+        build_url:     Config.build_url,
         deploy_config: Config.deploy_config
       )
 

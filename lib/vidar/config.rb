@@ -52,6 +52,11 @@ module Vidar
         get(key) || fail(MissingConfigError, key)
       end
 
+      def build_url
+        value = ENV[get(:build_env).to_s]
+        value&.empty? ? nil : value
+      end
+
       def deploy_config
         deployments = get(:deployments)
         deployments = {} unless deployments.is_a?(Hash)
