@@ -60,7 +60,7 @@ module Vidar
       def deploy_config
         deployments = get(:deployments)
         deployments = {} unless deployments.is_a?(Hash)
-        deployment  = deployments[get!(:kubectl_context)]
+        deployment = deployments[get!(:kubectl_context)]
 
         if deployment.nil?
           Log.error "ERROR: could not find deployment config for #{get!(:kubectl_context)} context"

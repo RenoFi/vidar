@@ -6,11 +6,11 @@ module Vidar
       attr_reader :data, :state, :namespace, :kind, :pod_name
 
       def initialize(data)
-        @data      = data
-        @state     = data["state"]
+        @data = data
+        @state = data["state"]
         @namespace = data["namespace"]
-        @kind      = data["kind"]
-        @pod_name  = data["pod_name"]
+        @kind = data["kind"]
+        @pod_name = data["pod_name"]
       end
 
       def name

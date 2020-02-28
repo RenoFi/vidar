@@ -1,18 +1,18 @@
 module Vidar
   class SlackNotification
     def initialize(github:, revision:, revision_name:, deploy_config:, build_url: nil)
-      @github          = github
-      @revision        = revision
-      @revision_name   = revision_name
-      @build_url       = build_url
-      @build_hostname  = URI(build_url || '').hostname
-      @deploy_name     = deploy_config.name
-      @deploy_url      = deploy_config.url
-      @default_color   = deploy_config.default_color
-      @success_color   = deploy_config.success_color
-      @failure_color   = deploy_config.failure_color
-      @webhook_url     = deploy_config.slack_webhook_url
-      @connection      = Faraday.new
+      @github = github
+      @revision = revision
+      @revision_name = revision_name
+      @build_url = build_url
+      @build_hostname = URI(build_url || '').hostname
+      @deploy_name = deploy_config.name
+      @deploy_url = deploy_config.url
+      @default_color = deploy_config.default_color
+      @success_color = deploy_config.success_color
+      @failure_color = deploy_config.failure_color
+      @webhook_url = deploy_config.slack_webhook_url
+      @connection = Faraday.new
     end
 
     def configured?
