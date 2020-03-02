@@ -1,11 +1,9 @@
 [![Gem Version](https://badge.fury.io/rb/vidar.svg)](https://rubygems.org/gems/vidar)
 [![Build Status](https://travis-ci.org/RenoFi/vidar.svg?branch=master)](https://travis-ci.org/RenoFi/vidar)
-[![GitHub issues](https://img.shields.io/github/issues/renofi/vidar)](https://github.com/renofi/vidar/issues)
-[![GitHub license](https://img.shields.io/github/license/renofi/vidar)](https://github.com/RenoFi/vidar/blob/master/LICENSE.txt)
 
-# Vidar
+# vidar
 
-Vidar is a set of docker & k8s deployment tools based on thor gem
+`vidar` is a set of docker & k8s deployment tools based on thor gem
 
 ## Installation
 
