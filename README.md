@@ -25,12 +25,48 @@ Or install it yourself as:
 #### Requirements :
 
 * multistage `Dockerfile`, with at least 2 stages defined: `base`, `release`.
-* `docker-compose.ci.yml` file with defined services for all mentioned stages
+* `docker-compose.ci.yml` file with defined services for all mentioned stages, e.g.
+
+```yml
+version: '3.7'
+
+services:
+  base:
+    image: gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:base-${CURRENT_BRANCH:?err}
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: base
+      cache_from:
+        - gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:base-master
+        - gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:base
+        - gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:release
+        - gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:$REVISION
+    env_file:
+      - .env
+    environment:
+      - RACK_ENV=test
+
+  release:
+    image: gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:release
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: release
+      args:
+        - REVISION=${REVISION:?err}
+      cache_from:
+        - gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:base-${CURRENT_BRANCH:?err}
+        - gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:base-master
+        - gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:base
+        - gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:$REVISION
+```
+
 * `vidar.yml` file to the project root directory, which following content:
 
 ```yml
 # docker image name, required
-image: gcr.io/renofiinfrastructure/vidar
+image: gcr.io/[GCP-PROJECT-ID]/[APP-NAME]
 # k8s namespace, required
 namespace: borrower
 # github name used to build deployment notification content
