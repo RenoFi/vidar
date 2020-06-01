@@ -3,18 +3,22 @@ module Vidar
     class Container
       JOB_KIND = "Job".freeze
 
-      attr_reader :data, :state, :namespace, :kind, :pod_name
+      attr_reader :data, :state, :namespace,
+        :kind, :pod_name,
+        :reason, :message
 
       def initialize(data)
         @data = data
-        @state = data["state"]
+        @state = data["state"] || {}
         @namespace = data["namespace"]
         @kind = data["kind"]
         @pod_name = data["pod_name"]
+        @reason = data["reason"]
+        @message = data["message"]
       end
 
       def name
-        data["name"]
+        data["name"] || pod_name
       end
 
       def deployed?
@@ -40,13 +44,15 @@ module Vidar
       def to_text
         parts = []
         parts << namespace.to_s.ljust(20, " ")
-        parts << name.to_s.ljust(25, " ")
-        parts += text_statuses.map { |s| s.ljust(40, " ") }
+        parts << name.to_s.ljust(35, " ")
+        parts += text_statuses.map { |s| s.ljust(45, " ") }
         "| #{parts.join(' | ')} |"
       end
 
       def text_statuses
-        if running?
+        if unschedulable?
+          [ColorizedString["Unschedulable"].light_red, ColorizedString[message].light_red]
+        elsif running?
           if job?
             [ColorizedString["Running"].light_yellow, "Started at: #{running_started_at}"]
           elsif ready?
@@ -95,6 +101,10 @@ module Vidar
 
       def terminated_error?
         state.dig("terminated", "reason") == "Error" || state.dig("terminated", "exitCode")
+      end
+
+      def unschedulable?
+        reason == "Unschedulable"
       end
 
       def job?

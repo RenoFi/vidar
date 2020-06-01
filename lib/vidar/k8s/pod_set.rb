@@ -65,7 +65,7 @@ module Vidar
           owner_references = i.dig("metadata", "ownerReferences") || []
           kind = (owner_references[0] || {})["kind"]
           namespace = i.dig("metadata", "namespace")
-          statuses = i.dig("status", "containerStatuses") || []
+          statuses = i.dig("status", "containerStatuses") || i.dig("status", "conditions") || []
           statuses.each do |s|
             s["namespace"] = namespace
             s["kind"] = kind

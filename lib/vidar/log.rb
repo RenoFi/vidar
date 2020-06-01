@@ -2,7 +2,7 @@ module Vidar
   class Log
     class << self
       def line
-        puts "|" + "-" * 122 + "|"
+        puts "|" + "-" * 142 + "|"
       end
 
       def info(text, fill_with = "#")

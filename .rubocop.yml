@@ -11,3 +11,6 @@ AllCops:
 
 RSpec/SubjectStub:
   Enabled: false
+
+Metrics/PerceivedComplexity:
+  Max: 15
