@@ -1,6 +1,7 @@
 require 'json'
 require 'open3'
 require 'ostruct'
+require 'uri'
 require 'yaml'
 
 require 'colorized_string'

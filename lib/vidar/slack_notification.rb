@@ -5,7 +5,7 @@ module Vidar
       @revision = revision
       @revision_name = revision_name
       @build_url = build_url
-      @build_hostname = URI(build_url || '').hostname
+      @build_hostname = ::URI.parse(build_url || '').hostname
       @deploy_name = deploy_config.name
       @deploy_url = deploy_config.url
       @default_color = deploy_config.default_color
