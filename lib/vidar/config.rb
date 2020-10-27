@@ -53,7 +53,7 @@ module Vidar
       end
 
       def build_url
-        value = ENV[get(:build_env).to_s]
+        value = ENV[get(:build_env).to_s] || get(:build_url)
         value&.empty? ? nil : value
       end
 

@@ -36,27 +36,39 @@ RSpec.describe Vidar::Config do
 
     specify { expect(subject).to eq nil }
 
-    context 'when build_url is defined in yaml' do
-      let(:env_key) { 'TRAVIS_BUILD_WEB_URL' }
-      let(:env_value) { nil }
+    context 'when build_env or build_url is defined in yaml' do
+      let(:build_env_key) { nil }
+      let(:build_env_value) { nil }
+      let(:build_url) { nil }
 
       before do
-        allow(described_class).to receive(:get).with(:build_env) { env_key }
-        allow(ENV).to receive(:[]).with(env_key) { env_value }
+        allow(described_class).to receive(:get).with(:build_env) { build_env_key }
+        allow(described_class).to receive(:get).with(:build_url) { build_url }
+        ENV[build_env_key] = build_env_value if build_env_key
       end
 
-      specify { expect(subject).to eq nil }
+      after do
+        ENV[build_env_key] = 'https://ci.company.com/builds/123' if build_env_key
+      end
 
       context 'when ENV[build_url] is set to a URL' do
-        let(:env_value) { 'https://ci.company.com/builds/123' }
+        let(:build_env_key) { 'VIDAR_TEST_BUILD_WEB_URL' }
+        let(:build_env_value) { 'https://ci.company.com/builds/123' }
 
-        specify { expect(subject).to eq env_value }
+        specify { expect(subject).to eq build_env_value }
       end
 
       context 'when ENV[build_url] is set to a blank string' do
-        let(:env_value) { '' }
+        let(:build_env_key) { 'TRAVIS_BUILD_WEB_URL' }
+        let(:build_env_value) { '' }
 
         specify { expect(subject).to eq nil }
+      end
+
+      context 'when build_url is set' do
+        let(:build_url) { "http://ci.company.com/asdf1234" }
+
+        specify { expect(subject).to eq "http://ci.company.com/asdf1234" }
       end
     end
   end
