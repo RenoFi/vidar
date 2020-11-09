@@ -65,9 +65,11 @@ module Vidar
 
     desc "deploy", "Perform k8s deployment with deploy hook"
     method_option :revision, required: false
+    method_option :kubectl_context, required: false
     def deploy
       revision = options[:revision] || Config.get!(:revision)
-      Log.info "Current kubectl context: #{Config.get!(:kubectl_context)}"
+      kubectl_context = options[:kubectl_context] || Config.get!(:kubectl_context)
+      Log.info "Current kubectl context: #{kubectl_context}"
 
       Log.info "Looking for deploy hook..."
       template_name, error, status = Open3.capture3 "kubectl get cronjob deploy-hook-template -n #{Config.get!(:namespace)} -o name --ignore-not-found=true"
