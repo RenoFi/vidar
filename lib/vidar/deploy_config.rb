@@ -10,7 +10,7 @@ module Vidar
 
     def initialize(options)
       @name = options.fetch(:name)
-      @url = options.fetch(:url)
+      @url = options.fetch(:url, nil)
 
       @default_color = options.fetch(:default_color, DEFAULT_COLOR)
       @success_color = options.fetch(:success_color, SUCCESS_COLOR)
