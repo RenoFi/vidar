@@ -19,7 +19,7 @@ GEM
       ruby2_keywords
     method_source (1.0.0)
     multipart-post (2.1.1)
-    parallel (1.20.0)
+    parallel (1.20.1)
     parser (2.7.2.0)
       ast (~> 2.4.1)
     pry (0.13.1)
