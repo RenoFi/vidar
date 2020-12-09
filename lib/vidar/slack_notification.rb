@@ -1,6 +1,6 @@
 module Vidar
   class SlackNotification
-    def initialize(github:, revision:, revision_name:, deploy_config:, build_url: nil)
+    def initialize(github:, revision:, revision_name:, deploy_config:, build_url: nil, connection: Faraday.new)
       @github = github
       @revision = revision
       @revision_name = revision_name
@@ -11,7 +11,7 @@ module Vidar
       @success_color = deploy_config.success_color
       @failure_color = deploy_config.failure_color
       @webhook_url = deploy_config.slack_webhook_url
-      @connection = Faraday.new
+      @connection = connection
     end
 
     def configured?

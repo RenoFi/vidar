@@ -9,7 +9,8 @@ RSpec.describe Vidar::SlackNotification do
     )
   end
 
-  let(:webhook_url) { "https://slack.local/asdf1234" }
+  let(:connection) { instance_double(Faraday) }
+  let(:webhook_url) { "https://slack.local/fake" }
 
   let(:deploy_config) do
     Vidar::DeployConfig.new(
@@ -59,11 +60,9 @@ RSpec.describe Vidar::SlackNotification do
       }
     end
 
-    before do
-      expect(subject).to receive(:perform_with).with(expected_data)
-    end
-
     specify do
+      stub_request(:post, "https://slack.local/fake")
+        .with(body: expected_data.to_json, headers: { "Content-Type" => "application/json" })
       subject.failure
     end
   end
@@ -92,11 +91,9 @@ RSpec.describe Vidar::SlackNotification do
       }
     end
 
-    before do
-      expect(subject).to receive(:perform_with).with(expected_data)
-    end
-
     specify do
+      stub_request(:post, "https://slack.local/fake")
+        .with(body: expected_data.to_json, headers: { "Content-Type" => "application/json" })
       subject.success
     end
   end
