@@ -1,10 +1,11 @@
 module Vidar
   class Config
     DEFAULT_MANIFEST_FILE = "vidar.yml".freeze
+    DEFAULT_BRANCHES = %w[main master].freeze
 
     DEFAULT_OPTIONS = {
       compose_file:       -> { "docker-compose.ci.yml" },
-      default_branch:     -> { "master" },
+      default_branch:     -> { (DEFAULT_BRANCHES & branches).first || DEFAULT_BRANCHES.first },
       current_branch:     -> { `git rev-parse --abbrev-ref HEAD`.strip.tr("/", "-") },
       revision:           -> { `git rev-parse HEAD`.strip },
       revision_name:      -> { `git show --pretty=format:"%s (%h)" -s HEAD`.strip },
@@ -71,6 +72,10 @@ module Vidar
         deployment.transform_values! { |value| Vidar::Interpolation.call(value, self) }
 
         DeployConfig.new(deployment)
+      end
+
+      def branches
+        `git for-each-ref --format='%(refname:short)' refs/heads/*`.split("\n")
       end
 
       def default_branch?

@@ -90,7 +90,7 @@ deployments:
     slack_webhook_url: https://hooks.slack.com/services/ASCKNZ0vug2R3Ydo/ASCKNZ0vug2R3Ydo/ASCKNZ0vug2R3Ydo
 # docker-compose file, optional, default value: docker-compose.ci.yml
 compose_file: docker-compose.ci.yml
-# default_branch, optional, default value: master
+# default_branch, optional, default value: main or master (auto-detected from local branches)
 default_branch: dev
 # console_command, optional, default value: bin/console
 console_command: rake console

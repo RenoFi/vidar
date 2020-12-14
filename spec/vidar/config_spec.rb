@@ -18,7 +18,7 @@ RSpec.describe Vidar::Config do
   describe ".get" do
     specify do
       expect(described_class.get("github")).to eq("RenoFi/vidar")
-      expect(described_class.get("default_branch")).to eq("master")
+      expect(described_class.get("default_branch")).to eq("main")
       expect(described_class.get("invalid")).to eq(nil)
     end
   end
@@ -26,7 +26,7 @@ RSpec.describe Vidar::Config do
   describe ".get!" do
     specify do
       expect(described_class.get!("github")).to eq("RenoFi/vidar")
-      expect(described_class.get!("default_branch")).to eq("master")
+      expect(described_class.get!("default_branch")).to eq("main")
       expect { described_class.get!("invalid") }.to raise_error(Vidar::MissingConfigError)
     end
   end
