@@ -63,7 +63,7 @@ GEM
     rubocop-rspec (2.0.1)
       rubocop (~> 1.0)
       rubocop-ast (>= 1.1.0)
-    ruby-progressbar (1.10.1)
+    ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.2)
     thor (1.0.1)
     unicode-display_width (1.7.0)
