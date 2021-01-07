@@ -8,4 +8,9 @@ inherit_from:
 
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 2.6
+
+Gemspec/RequiredRubyVersion:
+  Include:
+    - 2.6
+    - 2.7
+    - 3.0
