@@ -1,6 +1,6 @@
 module Vidar
   class Interpolation
-    INTERPOLATION_PATTERN = /\{\{(\w+)\}\}/.freeze
+    INTERPOLATION_PATTERN = /\{\{(\w+)\}\}/
 
     class << self
       def call(string, getter)
