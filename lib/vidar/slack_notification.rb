@@ -57,13 +57,13 @@ module Vidar
     def data(message:, color:)
       text = [message].flatten.compact.join("\n")
       {
-        "attachments": [
+        attachments: [
           {
-            "title": github,
-            "title_link": github_url,
-            "color": color,
-            "text": text,
-            "fallback": text,
+            title: github,
+            title_link: github_url,
+            color: color,
+            text: text,
+            fallback: text,
           }
         ]
       }

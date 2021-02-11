@@ -24,7 +24,7 @@ module Vidar
 
     def data
       {
-        "version": revision
+        version: revision
       }
     end
   end
