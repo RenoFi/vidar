@@ -158,7 +158,7 @@ module Vidar
       else
         Log.info "Available containers:"
         containers.each(&:print)
-        container = containers.first
+        container = containers.detect { c.name == 'console' } || containers.last
 
         Log.info "Running #{options[:command]} in #{container.pod_name}"
         Run.kubectl("exec -it #{container.pod_name} -- #{options[:command]}")
