@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    vidar (1.4.1)
+    vidar (1.4.2)
       colorize
       faraday
       thor (~> 1.0)
