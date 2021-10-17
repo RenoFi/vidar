@@ -1,5 +1,5 @@
 [![Gem Version](https://badge.fury.io/rb/vidar.svg)](https://rubygems.org/gems/vidar)
-[![Build Status](https://travis-ci.org/RenoFi/vidar.svg?branch=master)](https://travis-ci.org/RenoFi/vidar)
+[![Build Status](https://github.com/RenoFi/vidar/actions/workflows/ci.yml/badge.svg)](https://github.com/RenoFi/vidar/actions/workflows/ci.yml?query=branch%3Amain)
 
 # vidar
 
