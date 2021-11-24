@@ -79,6 +79,7 @@ module Vidar
 
     def deploy_link
       return deploy_name unless deploy_url
+
       "<#{deploy_url}|#{deploy_name}>"
     end
 

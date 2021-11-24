@@ -28,6 +28,7 @@ module Vidar
 
     def success?
       return false unless last_pod_set
+
       last_pod_set.success?
     end
 
