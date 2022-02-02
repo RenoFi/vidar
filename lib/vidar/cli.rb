@@ -84,6 +84,7 @@ module Vidar
           Run.kubectl "create job deploy-hook --from=#{template_name}"
 
           deploy_status = Vidar::DeployStatus.new(namespace: Config.get!(:namespace), filter: "deploy-hook")
+          deploy_status.wait_until_up
           deploy_status.wait_until_completed
 
           unless deploy_status.success?

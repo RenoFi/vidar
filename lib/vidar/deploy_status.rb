@@ -12,6 +12,20 @@ module Vidar
       @max_tries = max_tries
     end
 
+    def wait_until_up
+      tries = 0
+
+      sleep(INITIAL_SLEEP)
+
+      until pod_set.any?
+        tries += 1
+        sleep(SLEEP)
+        if tries > max_tries
+          break
+        end
+      end
+    end
+
     def wait_until_completed
       tries = 0
 

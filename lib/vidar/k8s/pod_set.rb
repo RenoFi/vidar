@@ -6,6 +6,10 @@ module Vidar
         @filter = filter
       end
 
+      def any?
+        containers.any?
+      end
+
       def deployed?
         if items.empty?
           Log.error "Could not fetch pod list"
