@@ -1,6 +1,5 @@
 # CHANGELOG
 
-## 1.4.0 - 2020-12-14
+## 1.5.0 - 2022-04-20
 
-- make `default_branch` to be auto-detected
-from `main` and `master`, so it works with [the new github convention]) https://github.blog/changelog/2020-10-01-the-default-branch-for-newly-created-repositories-is-now-main)
+- Drop ruby 2.7 support and test against ruby 3.1
