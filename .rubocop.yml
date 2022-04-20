@@ -11,5 +11,5 @@ AllCops:
 
 Gemspec/RequiredRubyVersion:
   Include:
-    - 2.7
     - 3.0
+    - 3.1

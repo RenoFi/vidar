@@ -5,7 +5,7 @@ RSpec.describe Vidar::SlackNotification do
       revision:      "059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd",
       revision_name: "Release 1.0.0",
       build_url:     "https://ci.company.com/builds/123",
-      deploy_config: deploy_config,
+      deploy_config:,
     )
   end
 
@@ -21,13 +21,13 @@ RSpec.describe Vidar::SlackNotification do
 
   describe "#configured?" do
     context "when webhook_url is present?" do
-      it { expect(subject.configured?).to eq(true) }
+      it { expect(subject.configured?).to be(true) }
     end
 
     context "when webhook_url is blank?" do
       let(:webhook_url) { nil }
 
-      it { expect(subject.configured?).to eq(false) }
+      it { expect(subject.configured?).to be(false) }
     end
   end
 

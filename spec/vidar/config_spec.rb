@@ -19,7 +19,7 @@ RSpec.describe Vidar::Config do
     specify do
       expect(described_class.get("github")).to eq("RenoFi/vidar")
       expect(described_class.get("default_branch")).to eq("main")
-      expect(described_class.get("invalid")).to eq(nil)
+      expect(described_class.get("invalid")).to be_nil
     end
   end
 
@@ -34,7 +34,7 @@ RSpec.describe Vidar::Config do
   describe '.build_url' do
     subject { described_class.build_url }
 
-    specify { expect(subject).to eq nil }
+    specify { expect(subject).to be_nil }
 
     context 'when build_env or build_url is defined in yaml' do
       let(:build_env_key) { nil }
@@ -62,7 +62,7 @@ RSpec.describe Vidar::Config do
         let(:build_env_key) { 'TRAVIS_BUILD_WEB_URL' }
         let(:build_env_value) { '' }
 
-        specify { expect(subject).to eq nil }
+        specify { expect(subject).to be_nil }
       end
 
       context 'when build_url is set' do
