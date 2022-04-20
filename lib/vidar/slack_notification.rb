@@ -24,7 +24,7 @@ module Vidar
         ":fire: <!channel>",
         build_link
       ]
-      perform_with data(message:, color: failure_color)
+      perform_with data(message: message, color: failure_color)
     end
 
     def success
@@ -32,11 +32,11 @@ module Vidar
         "Successful deploy of #{github_link} to #{deploy_link}.",
         build_link
       ]
-      perform_with data(message:, color: success_color)
+      perform_with data(message: message, color: success_color)
     end
 
     def deliver(message:, color: default_color)
-      perform_with data(message:, color:)
+      perform_with data(message: message, color: color)
     end
 
     def perform_with(data)
@@ -61,8 +61,8 @@ module Vidar
           {
             title: github,
             title_link: github_url,
-            color:,
-            text:,
+            color: color,
+            text: text,
             fallback: text,
           }
         ]
