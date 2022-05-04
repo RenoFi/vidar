@@ -33,7 +33,7 @@ GEM
     public_suffix (4.0.7)
     rainbow (3.1.1)
     rake (13.0.6)
-    regexp_parser (2.3.0)
+    regexp_parser (2.3.1)
     rexml (3.2.5)
     rspec (3.11.0)
       rspec-core (~> 3.11.0)
@@ -48,13 +48,13 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
     rspec-support (3.11.0)
-    rubocop (1.27.0)
+    rubocop (1.28.2)
       parallel (~> 1.10)
       parser (>= 3.1.0.0)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 1.16.0, < 2.0)
+      rubocop-ast (>= 1.17.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.17.0)
@@ -73,12 +73,7 @@ GEM
       hashdiff (>= 0.4.0, < 2.0.0)
 
 PLATFORMS
-  aarch64-linux-musl
-  x86_64-darwin-18
-  x86_64-darwin-19
-  x86_64-darwin-20
-  x86_64-darwin-21
-  x86_64-linux
+  ruby
 
 DEPENDENCIES
   awesome_print
@@ -93,4 +88,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.3.11
+   2.3.13
