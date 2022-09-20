@@ -61,7 +61,7 @@ module Vidar
       end
 
       def all_containers
-        @all_containers ||= containers_data.map { |status| Container.new(status) }
+        @all_containers ||= containers_data.map { |status| Container.new(status) }.reject(&:job?)
       end
 
       def containers_data
