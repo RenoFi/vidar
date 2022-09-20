@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.5.2 - 2022-09-20
+
+- excluse job containter from pod set status check
+
 ## 1.5.0 - 2022-04-20
 
 - Drop ruby 2.7 support and test against ruby 3.1
