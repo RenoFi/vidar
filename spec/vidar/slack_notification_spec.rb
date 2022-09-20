@@ -63,7 +63,7 @@ RSpec.describe Vidar::SlackNotification do
     specify do
       stub_request(:post, "https://slack.local/fake")
         .with(body: expected_data.to_json, headers: { "Content-Type" => "application/json" })
-      subject.failure
+      expect(subject.failure).to be_a(Faraday::Response)
     end
   end
 
@@ -94,7 +94,7 @@ RSpec.describe Vidar::SlackNotification do
     specify do
       stub_request(:post, "https://slack.local/fake")
         .with(body: expected_data.to_json, headers: { "Content-Type" => "application/json" })
-      subject.success
+      expect(subject.success).to be_a(Faraday::Response)
     end
   end
 end
