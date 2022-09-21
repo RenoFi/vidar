@@ -32,9 +32,11 @@ module Vidar
       end
 
       def containers
-        return all_containers unless filter
-
-        all_containers.select { |cs| cs.name.to_s.include?(filter) }
+        if filter
+          all_containers.select { |cs| cs.name.to_s.include?(filter) }
+        else
+          all_containers.reject(&:job?)
+        end
       end
 
       private
@@ -61,7 +63,7 @@ module Vidar
       end
 
       def all_containers
-        @all_containers ||= containers_data.map { |status| Container.new(status) }.reject(&:job?)
+        @all_containers ||= containers_data.map { |status| Container.new(status) }
       end
 
       def containers_data
