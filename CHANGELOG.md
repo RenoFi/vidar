@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.5.3 - 2022-09-20
+
+- fix determining deploy hook status (issue introduced in 1.5.2)
+
 ## 1.5.2 - 2022-09-20
 
 - excluse job containter from pod set status check
