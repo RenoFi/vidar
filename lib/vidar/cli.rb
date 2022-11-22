@@ -74,6 +74,8 @@ module Vidar
       Log.info "Looking for deploy hook..."
       template_name, error, status = Open3.capture3 "kubectl get cronjob deploy-hook-template -n #{Config.get!(:namespace)} -o name --ignore-not-found=true"
 
+      slack_notification = SlackNotification.get
+
       if status.success?
         if template_name.to_s.empty?
           Log.info "No deploy hook found"
@@ -90,11 +92,13 @@ module Vidar
           unless deploy_status.success?
             Run.kubectl "describe job deploy-hook"
             Log.error "Error running deploy hook template"
+            slack_notification.failure if slack_notification.configured?
             exit(1)
           end
         end
       else
         Log.info "Error getting deploy hook template: #{error}"
+        slack_notification.failure if slack_notification.configured?
         exit(1)
       end
 
@@ -116,13 +120,7 @@ module Vidar
       Log.info "Current kubectl context: #{Config.get!(:kubectl_context)}"
       Log.info "Checking if all containers in #{Config.get!(:namespace)} namespace(s) are ready..."
 
-      slack_notification = SlackNotification.new(
-        github:        Config.get!(:github),
-        revision:      Config.get!(:revision),
-        revision_name: Config.get!(:revision_name),
-        build_url:     Config.build_url,
-        deploy_config: Config.deploy_config
-      )
+      slack_notification = SlackNotification.get
 
       deploy_status = Vidar::DeployStatus.new(namespace: Config.get!(:namespace))
 

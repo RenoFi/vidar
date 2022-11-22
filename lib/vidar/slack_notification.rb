@@ -1,5 +1,15 @@
 module Vidar
   class SlackNotification
+    def self.get
+      new(
+        github:        Config.get!(:github),
+        revision:      Config.get!(:revision),
+        revision_name: Config.get!(:revision_name),
+        build_url:     Config.build_url,
+        deploy_config: Config.deploy_config
+      )
+    end
+
     def initialize(github:, revision:, revision_name:, deploy_config:, build_url: nil, connection: Faraday.new)
       @github = github
       @revision = revision
