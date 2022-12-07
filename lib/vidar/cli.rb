@@ -66,6 +66,9 @@ module Vidar
     desc "deploy", "Perform k8s deployment with deploy hook"
     method_option :revision, required: false
     method_option :kubectl_context, required: false
+    method_option :destination, required: false, default: "deployments,cronjobs"
+    method_option :container, required: false, default: "*"
+    method_option :all, required: false, type: :boolean, default: true
     def deploy
       revision = options[:revision] || Config.get!(:revision)
       kubectl_context = options[:kubectl_context] || Config.get!(:kubectl_context)
@@ -102,8 +105,11 @@ module Vidar
         exit(1)
       end
 
-      Log.info "Set kubectl image..."
-      Run.kubectl "set image deployments,cronjobs *=#{Config.get!(:image)}:#{revision} --all"
+      destination = options[:destination]
+      container = options[:container]
+      all = options[:all]
+      Log.info "Set kubectl image for #{all ? 'all ' : ''}#{destination} container=#{container}..."
+      Run.kubectl "set image #{destination} #{container}=#{Config.get!(:image)}:#{revision} #{all ? '--all' : ''}"
     end
 
     desc "release", "Build and publish docker images"
