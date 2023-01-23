@@ -78,6 +78,7 @@ module Vidar
       template_name, error, status = Open3.capture3 "kubectl get cronjob deploy-hook-template -n #{Config.get!(:namespace)} -o name --ignore-not-found=true"
 
       slack_notification = SlackNotification.get
+      honeycomb_notification = HoneycombNotification.get
 
       if status.success?
         if template_name.to_s.empty?
@@ -96,12 +97,14 @@ module Vidar
             Run.kubectl "describe job deploy-hook"
             Log.error "Error running deploy hook template"
             slack_notification.failure if slack_notification.configured?
+            honeycomb_notification.failure
             exit(1)
           end
         end
       else
         Log.info "Error getting deploy hook template: #{error}"
         slack_notification.failure if slack_notification.configured?
+        honeycomb_notification.failure
         exit(1)
       end
 
@@ -127,6 +130,7 @@ module Vidar
       Log.info "Checking if all containers in #{Config.get!(:namespace)} namespace(s) are ready..."
 
       slack_notification = SlackNotification.get
+      honeycomb_notification = HoneycombNotification.get
 
       deploy_status = Vidar::DeployStatus.new(namespace: Config.get!(:namespace))
 
@@ -135,10 +139,12 @@ module Vidar
       if deploy_status.success?
         Log.info "OK: All containers are ready"
         slack_notification.success if slack_notification.configured?
+        honeycomb_notification.success
         invoke :notify_sentry
       else
         Log.error "ERROR: Some of containers are errored or not ready"
         slack_notification.failure if slack_notification.configured?
+        honeycomb_notification.failure
         exit(1)
       end
     end
@@ -193,6 +199,11 @@ module Vidar
       )
 
       sentry_notification.call if sentry_notification.configured?
+    end
+
+    desc "notify_honeycomb", "Send test honeycomb notification"
+    def notify_honeycomb
+      HoneycombNotification.get.success
     end
 
     method_option :message, required: true
