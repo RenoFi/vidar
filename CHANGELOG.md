@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.7.0 - 2023-01-23
+
+Add support for publishing Honeycomb markers on deployment.
+
 ## 1.6.0 - 2022-12-07
 
 Allow more complex deployments. By passing extra options to the deployment command, we allow deployments where there are multiple containers per pod or where there is more than just deployments/cronjobs (like deamonsets or something similar).

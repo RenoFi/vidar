@@ -14,6 +14,7 @@ module Vidar
       console_command:    -> { "bin/console" },
       base_stage_name:    -> { "base" },
       release_stage_name: -> { "release" },
+      honeycomb_api_key: -> { ENV['HONEYCOMB_API_KEY'] },
     }.freeze
 
     class << self

@@ -71,6 +71,8 @@ image: gcr.io/[GCP-PROJECT-ID]/[APP-NAME]
 namespace: borrower
 # github name used to build deployment notification content
 github: RenoFi/vidar
+# The key to use for creating honeycomb markers, defaults to HONEYCOMB_API_KEY env var
+honeycomb_api_key: secret
 # deployments config per kubectl context, required for `monitor_deploy_status` command
 deployments:
   gke_project_us-east4_staging:
@@ -88,6 +90,8 @@ deployments:
     sentry_webhook_url: https://sentry.io/api/hooks/release/builtin/123/asdf/
     # Slack webhook url used to send deploy notifications, optional
     slack_webhook_url: https://hooks.slack.com/services/ASCKNZ0vug2R3Ydo/ASCKNZ0vug2R3Ydo/ASCKNZ0vug2R3Ydo
+    # Name of the Honeycomb dataset to create a deployment marker in
+    honeycomb_dataset: staging
 # docker-compose file, optional, default value: docker-compose.ci.yml
 compose_file: docker-compose.ci.yml
 # default_branch, optional, default value: main or master (auto-detected from local branches)

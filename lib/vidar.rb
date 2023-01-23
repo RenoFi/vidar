@@ -10,6 +10,7 @@ require 'thor'
 
 require 'vidar/version'
 require 'vidar/config'
+require 'vidar/honeycomb_notification'
 require 'vidar/interpolation'
 require 'vidar/log'
 require 'vidar/run'
