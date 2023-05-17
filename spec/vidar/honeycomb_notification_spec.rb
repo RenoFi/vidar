@@ -34,22 +34,38 @@ RSpec.describe Vidar::HoneycombNotification do
   end
 
   describe "#success" do
+    before do
+      ENV["HONEYCOMB_API_KEY_FOO"] = "foo-secret"
+    end
+
     it "sends a notification" do
-      stub_request(:post, "https://api.honeycomb.io/1/markers/foo")
+      create_legacy_marker = stub_request(:post, "https://api.honeycomb.io/1/markers/foo")
         .with(headers: { "Content-Type" => "application/json", "X-Honeycomb-Team" => "secret" })
         .to_return(status: 201)
 
+      create_marker = stub_request(:post, "https://api.honeycomb.io/1/markers/__all__")
+        .with(headers: { "Content-Type" => "application/json", "X-Honeycomb-Team" => "foo-secret" })
+        .to_return(status: 201)
+
       expect(subject.success).to be(true)
+      expect(create_legacy_marker).to have_been_requested
+      expect(create_marker).to have_been_requested
     end
   end
 
   describe "#failure" do
     it "sends a notification" do
-      stub_request(:post, "https://api.honeycomb.io/1/markers/foo")
+      create_legacy_marker = stub_request(:post, "https://api.honeycomb.io/1/markers/foo")
         .with(headers: { "Content-Type" => "application/json", "X-Honeycomb-Team" => "secret" })
         .to_return(status: 201)
 
+      create_marker = stub_request(:post, "https://api.honeycomb.io/1/markers/__all__")
+        .with(headers: { "Content-Type" => "application/json", "X-Honeycomb-Team" => "foo-secret" })
+        .to_return(status: 201)
+
       expect(subject.failure).to be(true)
+      expect(create_legacy_marker).to have_been_requested
+      expect(create_marker).to have_been_requested
     end
   end
 end
