@@ -59,12 +59,33 @@ module Vidar
     end
 
     def call
+      create_legacy_marker
+      create_marker
+    end
+
+    def create_legacy_marker
       return false unless configured?
 
       response = connection.post do |req|
         req.url "https://api.honeycomb.io/1/markers/#{dataset}"
         req.headers['Content-Type'] = 'application/json'
         req.headers['X-Honeycomb-Team'] = api_key.to_s
+        req.body = data.to_json
+      end
+
+      return true if response.status == 201
+
+      warn "Honeycomb marker not created: status: #{response.status} response: #{response.body}"
+      false
+    end
+
+    def create_marker
+      return false unless dataset && Config.honeycomb_env_api_key(dataset)
+
+      response = connection.post do |req|
+        req.url "https://api.honeycomb.io/1/markers/__all__"
+        req.headers['Content-Type'] = 'application/json'
+        req.headers['X-Honeycomb-Team'] = Config.honeycomb_env_api_key(dataset).to_s
         req.body = data.to_json
       end
 

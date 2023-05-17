@@ -59,6 +59,10 @@ module Vidar
         value&.empty? ? nil : value
       end
 
+      def honeycomb_env_api_key(env)
+        ENV["HONEYCOMB_API_KEY_#{env.upcase}"]
+      end
+
       def deploy_config
         deployments = get(:deployments)
         deployments = {} unless deployments.is_a?(Hash)
