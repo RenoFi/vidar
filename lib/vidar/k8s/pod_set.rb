@@ -51,11 +51,7 @@ module Vidar
       end
 
       def kubectl_get
-        if namespace == "all"
-          `kubectl get pods --all-namespaces -o json`
-        else
-          `kubectl get pods -n #{namespace} -o json`
-        end
+        Run.kubectl("get pods -o json", namespace: namespace)
       end
 
       def ready_and_running_containers
