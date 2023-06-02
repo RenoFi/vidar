@@ -10,7 +10,7 @@ module Vidar
         system("#{args.join(' ')} docker-compose -f #{Config.get!(:compose_file)} #{command}") || exit(1)
       end
 
-      def kubectl(command, namespace: Config.namespace)
+      def kubectl(command, namespace: Config.get!(:namespace))
         system("#{kubectl_envs_string}kubectl --namespace=#{namespace} #{command}") || exit(1)
       end
 
