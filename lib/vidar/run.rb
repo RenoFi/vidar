@@ -10,10 +10,12 @@ module Vidar
         system("#{args.join(' ')} docker-compose -f #{Config.get!(:compose_file)} #{command}") || exit(1)
       end
 
-      def kubectl(command, namespace: Config.namespace, https_proxy: Config.deploy_config.https_proxy)
-        envs_string = "HTTPS_PROXY=#{https_proxy} " if https_proxy
-        namespace_opt = namespace == "all" ? "--all-namespaces" : "--namespace=#{namespace}"
-        system("#{envs_string}kubectl #{namespace_opt} #{command}") || exit(1)
+      def kubectl(command, namespace: Config.namespace)
+        system("#{kubectl_envs_string}kubectl --namespace=#{namespace} #{command}") || exit(1)
+      end
+
+      def kubectl_envs_string
+        "HTTPS_PROXY=#{https_proxy} " if Config.deploy_config.https_proxy
       end
     end
   end
