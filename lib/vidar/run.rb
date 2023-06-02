@@ -15,7 +15,8 @@ module Vidar
       end
 
       def kubectl_envs_string
-        "HTTPS_PROXY=#{https_proxy} " if Config.deploy_config.https_proxy
+        https_proxy = Config.deploy_config.https_proxy
+        "HTTPS_PROXY=#{https_proxy} " if https_proxy
       end
     end
   end
