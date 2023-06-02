@@ -14,6 +14,11 @@ module Vidar
       Run.docker_compose("run #{target} #{options[:command]}") || exit(1)
     end
 
+    desc "version", "Prints current version"
+    def version
+      puts Vidar::VERSION
+    end
+
     desc "pull", "Pull existing docker images to leverage docker caching"
     def pull
       Log.info "Pulling #{Config.get!(:image)} tags"

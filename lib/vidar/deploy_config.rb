@@ -6,7 +6,8 @@ module Vidar
 
     attr_reader :name, :url,
       :default_color, :success_color, :failure_color,
-      :slack_webhook_url, :sentry_webhook_url, :honeycomb_dataset
+      :slack_webhook_url, :sentry_webhook_url, :honeycomb_dataset,
+      :https_proxy
 
     def initialize(options)
       @name = options.fetch(:name)
@@ -19,6 +20,8 @@ module Vidar
       @slack_webhook_url = options[:slack_webhook_url]
       @sentry_webhook_url = options[:sentry_webhook_url]
       @honeycomb_dataset = options[:honeycomb_dataset]
+
+      @https_proxy = options[:https_proxy]
     end
   end
 end

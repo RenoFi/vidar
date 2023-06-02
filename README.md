@@ -92,6 +92,8 @@ deployments:
     slack_webhook_url: https://hooks.slack.com/services/ASCKNZ0vug2R3Ydo/ASCKNZ0vug2R3Ydo/ASCKNZ0vug2R3Ydo
     # Name of the Honeycomb dataset to create a deployment marker in
     honeycomb_dataset: staging
+    # https_proxy address used to connect private k8s control plane endpoint
+    https_proxy: localhost:8888
 # docker-compose file, optional, default value: docker-compose.ci.yml
 compose_file: docker-compose.ci.yml
 # default_branch, optional, default value: main or master (auto-detected from local branches)
