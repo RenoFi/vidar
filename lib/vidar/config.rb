@@ -14,7 +14,7 @@ module Vidar
       console_command:    -> { "bin/console" },
       base_stage_name:    -> { "base" },
       release_stage_name: -> { "release" },
-      honeycomb_api_key: -> { ENV['HONEYCOMB_API_KEY'] },
+      honeycomb_api_key:  -> { ENV['HONEYCOMB_API_KEY'] },
     }.freeze
 
     class << self
@@ -64,9 +64,13 @@ module Vidar
       end
 
       def deploy_config
+        deploy_configs[get!(:kubectl_context)] ||= build_deploy_config(get!(:kubectl_context))
+      end
+
+      def build_deploy_config(kubectl_context)
         deployments = get(:deployments)
         deployments = {} unless deployments.is_a?(Hash)
-        deployment = deployments[get!(:kubectl_context)]
+        deployment = deployments[kubectl_context]
 
         if deployment.nil?
           Log.error "ERROR: could not find deployment config for #{get!(:kubectl_context)} context"
@@ -77,6 +81,10 @@ module Vidar
         deployment.transform_values! { |value| Vidar::Interpolation.call(value, self) }
 
         DeployConfig.new(deployment)
+      end
+
+      def deploy_configs
+        @deploy_configs ||= {}
       end
 
       def branches

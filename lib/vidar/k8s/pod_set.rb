@@ -52,9 +52,9 @@ module Vidar
 
       def kubectl_get
         if namespace == "all"
-          `kubectl get pods --all-namespaces -o json`
+          `#{Run.kubectl_envs_string}kubectl get pods --all-namespaces -o json`
         else
-          `kubectl get pods -n #{namespace} -o json`
+          `#{Run.kubectl_envs_string}kubectl get pods -n #{namespace} -o json`
         end
       end
 

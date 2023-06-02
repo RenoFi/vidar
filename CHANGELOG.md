@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.8.0 - 2023-06-02
+
+Add support for HTTPS_PROXY automatically set for each kubectl command
+
 ## 1.7.0 - 2023-01-23
 
 Add support for publishing Honeycomb markers on deployment.
