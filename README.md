@@ -32,23 +32,23 @@ version: '3.7'
 
 services:
   base:
-    image: gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:base-${CURRENT_BRANCH:?err}
+    image: [docker-registry-url]:base-${CURRENT_BRANCH:?err}
     build:
       dockerfile: Dockerfile
       context: .
       target: base
       cache_from:
-        - gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:base-master
-        - gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:base
-        - gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:release
-        - gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:$REVISION
+        - [docker-registry-url]:base-master
+        - [docker-registry-url]:base
+        - [docker-registry-url]:release
+        - [docker-registry-url]:$REVISION
     env_file:
       - .env
     environment:
       - RACK_ENV=test
 
   release:
-    image: gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:release
+    image: [docker-registry-url]:release
     build:
       dockerfile: Dockerfile
       context: .
@@ -56,17 +56,17 @@ services:
       args:
         - REVISION=${REVISION:?err}
       cache_from:
-        - gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:base-${CURRENT_BRANCH:?err}
-        - gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:base-master
-        - gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:base
-        - gcr.io/[GCP-PROJECT-ID]/[APP-NAME]:$REVISION
+        - [docker-registry-url]:base-${CURRENT_BRANCH:?err}
+        - [docker-registry-url]:base-master
+        - [docker-registry-url]:base
+        - [docker-registry-url]:$REVISION
 ```
 
 * `vidar.yml` file to the project root directory, which following content:
 
 ```yml
 # docker image name, required
-image: gcr.io/[GCP-PROJECT-ID]/[APP-NAME]
+image: [docker-registry-url]
 # k8s namespace, required
 namespace: borrower
 # github name used to build deployment notification content
