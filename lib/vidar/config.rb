@@ -6,7 +6,7 @@ module Vidar
     DEFAULT_OPTIONS = {
       compose_file:       -> { "docker-compose.ci.yml" },
       default_branch:     -> { (DEFAULT_BRANCHES & branches).first || DEFAULT_BRANCHES.first },
-      current_branch:     -> { ENV['SEMAPHORE_GIT_WORKING_BRANCH'] || `git rev-parse --abbrev-ref HEAD`.strip.tr("/", "-") },
+      current_branch:     -> { (ENV['SEMAPHORE_GIT_WORKING_BRANCH'] || `git rev-parse --abbrev-ref HEAD`.strip).tr("/", "-") },
       revision:           -> { `git rev-parse HEAD`.strip },
       revision_name:      -> { `git show --pretty=format:"%s (%h)" -s HEAD`.strip },
       kubectl_context:    -> { `kubectl config current-context`.strip },
