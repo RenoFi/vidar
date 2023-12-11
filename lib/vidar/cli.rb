@@ -23,9 +23,9 @@ module Vidar
     def pull
       Log.info "Pulling #{Config.get!(:image)} tags"
       Run.docker "pull #{Config.get!(:image)}:#{Config.get!(:base_stage_name)}-#{Config.get!(:current_branch)} 2> /dev/null || true"
-      Run.docker "pull #{Config.get!(:image)}:#{Config.get!(:base_stage_name)}-#{Config.get!(:default_branch)} 2> /dev/null || true"
-      Run.docker "pull #{Config.get!(:image)}:#{Config.get!(:base_stage_name)} 2> /dev/null || true"
-      Run.docker "pull #{Config.get!(:image)}:#{Config.get!(:release_stage_name)} 2> /dev/null || true"
+      unless Config.default_branch?
+        Run.docker "pull #{Config.get!(:image)}:#{Config.get!(:base_stage_name)}-#{Config.get!(:default_branch)} 2> /dev/null || true"
+      end
       Log.info "Docker images:"
       Run.docker("images")
     end
@@ -47,7 +47,6 @@ module Vidar
 
     desc "publish", "Publish docker images on docker registry"
     def publish
-      base_image_tag = "#{Config.get!(:image)}:#{Config.get!(:base_stage_name)}"
       revision_image_tag = "#{Config.get!(:image)}:#{Config.get!(:revision)}"
       release_image_tag = "#{Config.get!(:image)}:#{Config.get!(:release_stage_name)}"
       latest_image_tag = "#{Config.get!(:image)}:latest"
@@ -58,9 +57,8 @@ module Vidar
 
       return unless Config.default_branch?
 
-      Log.info "Publishing #{base_image_tag}"
-      Run.docker "tag #{base_image_tag}-#{Config.get!(:current_branch)} #{base_image_tag}"
-      Run.docker "push #{base_image_tag}"
+      Log.info "Publishing #{Config.get!(:base_stage_name)} image"
+      Run.docker "push #{Config.get!(:image)}:#{Config.get!(:base_stage_name)}-#{Config.get!(:current_branch)}"
 
       Log.info "Publishing #{release_image_tag}"
       Run.docker "tag #{release_image_tag} #{latest_image_tag}"
