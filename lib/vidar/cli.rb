@@ -30,6 +30,15 @@ module Vidar
       Run.docker("images")
     end
 
+    desc "build_and_cache_base", "Build and caches base stage"
+    def build_and_cache_base
+      Log.info "Building #{Config.get!(:base_stage_name)} image"
+      Run.docker_compose "build #{Config.get!(:base_stage_name)}"
+
+      Log.info "Publishing #{Config.get!(:base_stage_name)} image"
+      Run.docker "push #{Config.get!(:image)}:#{Config.get!(:base_stage_name)}-#{Config.get!(:current_branch)}"
+    end
+
     desc "build", "Build docker stages"
     def build
       Log.info "Building #{Config.get!(:base_stage_name)} image"
@@ -122,8 +131,8 @@ module Vidar
     def release
       Log.info "Build and release #{Config.get!(:image)}:#{Config.get!(:revision)}"
       pull
-      build
-      cache
+      Log.info "Building #{Config.get!(:release_stage_name)} image"
+      Run.docker_compose "build #{Config.get!(:release_stage_name)}"
       publish
     end
 
