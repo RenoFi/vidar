@@ -37,11 +37,6 @@ services:
       dockerfile: Dockerfile
       context: .
       target: base
-      cache_from:
-        - [docker-registry-url]:base-master
-        - [docker-registry-url]:base
-        - [docker-registry-url]:release
-        - [docker-registry-url]:$REVISION
     env_file:
       - .env
     environment:
@@ -55,11 +50,6 @@ services:
       target: release
       args:
         - REVISION=${REVISION:?err}
-      cache_from:
-        - [docker-registry-url]:base-${CURRENT_BRANCH:?err}
-        - [docker-registry-url]:base-master
-        - [docker-registry-url]:base
-        - [docker-registry-url]:$REVISION
 ```
 
 * `vidar.yml` file to the project root directory, which following content:
