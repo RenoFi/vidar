@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.9.1 - 2023-12-11
+
+Improves and simplifies how docker layers are cached and used. Adds `build_and_cache_base` command.
+
 ## 1.8.0 - 2023-06-02
 
 Add support for HTTPS_PROXY automatically set for each kubectl command
