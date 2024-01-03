@@ -5,8 +5,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "wednesday"
-      time: "11:45"
+      day: "monday"
+      time: "08:00"
       timezone: "UTC"
     commit-message:
       prefix: "[dependabot]"
