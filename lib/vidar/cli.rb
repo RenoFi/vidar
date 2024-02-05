@@ -42,12 +42,18 @@ module Vidar
     end
 
     desc "build", "Build docker stages"
+    option :target, required: false
     def build
-      Log.info "Building #{Config.get!(:base_stage_name)} image"
-      Run.docker_compose "build #{Config.get!(:base_stage_name)}"
+      if options[:target]
+        Log.info "Building #{options[:target]} image"
+        Run.docker_compose "build #{options[:target]}"
+      else
+        Log.info "Building #{Config.get!(:base_stage_name)} image"
+        Run.docker_compose "build #{Config.get!(:base_stage_name)}"
 
-      Log.info "Building #{Config.get!(:release_stage_name)} image"
-      Run.docker_compose "build #{Config.get!(:release_stage_name)}"
+        Log.info "Building #{Config.get!(:release_stage_name)} image"
+        Run.docker_compose "build #{Config.get!(:release_stage_name)}"
+      end
     end
 
     desc "cache", "Caches intermediate docker stages"
