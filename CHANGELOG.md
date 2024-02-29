@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.10.0 - 2024-02-29
+
+Drop ruby 3.0 support and add 3.3 support.
+
 ## 1.9.2 - 2023-12-11
 
 Improves and simplifies how docker layers are cached and used. Adds `build_and_cache_base` command.
