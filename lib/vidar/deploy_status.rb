@@ -51,7 +51,7 @@ module Vidar
     end
 
     def pod_set
-      @pod_set = K8s::PodSet.new(namespace: namespace, filter: filter)
+      @pod_set = K8s::PodSet.new(namespace:, filter:)
     end
   end
 end

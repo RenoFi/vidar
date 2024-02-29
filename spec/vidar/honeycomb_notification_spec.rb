@@ -5,8 +5,8 @@ RSpec.describe Vidar::HoneycombNotification do
       revision:      "059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd",
       revision_name: "Release 1.0.0",
       build_url:     "https://ci.company.com/builds/123",
-      deploy_config: deploy_config,
-      api_key:       api_key,
+      deploy_config:,
+      api_key:,
     )
   end
 
