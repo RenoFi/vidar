@@ -1,3 +1,3 @@
 module Vidar
-  VERSION = '1.9.4'.freeze
+  VERSION = '1.10.0'.freeze
 end
