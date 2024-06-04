@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.11.0 - 2024-06-04
+
+Add set_image command.
+
 ## 1.10.0 - 2024-02-29
 
 Drop ruby 3.0 support and add 3.3 support.
