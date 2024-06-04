@@ -135,6 +135,24 @@ module Vidar
       Run.kubectl "set image #{destination} #{container}=#{Config.get!(:image)}:#{revision} #{all ? '--all' : ''}"
     end
 
+    desc "set_image", "Set image for k8s deployment"
+    method_option :revision, required: false
+    method_option :kubectl_context, required: false
+    method_option :destination, required: false, default: "deployments,cronjobs"
+    method_option :container, required: false, default: "*"
+    method_option :all, required: false, type: :boolean, default: true
+    def set_image
+      revision = options[:revision] || Config.get!(:revision)
+      kubectl_context = options[:kubectl_context] || Config.get!(:kubectl_context)
+      Log.info "Current kubectl context: #{kubectl_context}"
+
+      destination = options[:destination]
+      container = options[:container]
+      all = options[:all]
+      Log.info "Set kubectl image for #{all ? 'all ' : ''}#{destination} container=#{container}..."
+      Run.kubectl "set image #{destination} #{container}=#{Config.get!(:image)}:#{revision} #{all ? '--all' : ''}"
+    end
+
     desc "release", "Build and publish docker images"
     def release
       Log.info "Build and release #{Config.get!(:image)}:#{Config.get!(:revision)}"
