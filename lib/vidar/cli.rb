@@ -163,14 +163,17 @@ module Vidar
     end
 
     desc "monitor_deploy_status", "Check is deployment has finished and sends post-deploy notification"
+    method_option :max_tries, required: false, default: "30"
     def monitor_deploy_status
+      max_tries = options[:max_tries].to_i
+
       Log.info "Current kubectl context: #{Config.get!(:kubectl_context)}"
-      Log.info "Checking if all containers in #{Config.get!(:namespace)} namespace(s) are ready..."
+      Log.info "Checking if all containers in #{Config.get!(:namespace)} namespace(s) are ready (#{max_tries} tries)..."
 
       slack_notification = SlackNotification.get
       honeycomb_notification = HoneycombNotification.get
 
-      deploy_status = Vidar::DeployStatus.new(namespace: Config.get!(:namespace))
+      deploy_status = Vidar::DeployStatus.new(namespace: Config.get!(:namespace), max_tries:)
 
       deploy_status.wait_until_completed
 
