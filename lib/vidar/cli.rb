@@ -106,14 +106,7 @@ module Vidar
         if template_name.to_s.empty?
           Log.info "No deploy hook found"
         else
-          Log.info "Executing deploy hook #{template_name.strip!} (#{max_tries} tries)..."
-          Run.kubectl "delete job deploy-hook --ignore-not-found=true"
-          Run.kubectl "set image cronjobs/deploy-hook-template deploy-hook-template=#{Config.get!(:image)}:#{revision} --all"
-          Run.kubectl "create job deploy-hook --from=#{template_name}"
-
-          deploy_status = Vidar::DeployStatus.new(namespace: Config.get!(:namespace), filter: "deploy-hook", max_tries:)
-          deploy_status.wait_until_up
-          deploy_status.wait_until_completed
+          deploy_status = run_deploy_hook(template_name:, revision:, max_tries:)
 
           unless deploy_status.success?
             Run.kubectl "describe job deploy-hook"
@@ -261,6 +254,20 @@ module Vidar
       )
 
       slack_notification.deliver(message: options[:message]) if slack_notification.configured?
+    end
+
+    private
+
+    def run_deploy_hook(template_name:, revision:, max_tries:)
+      Log.info "Executing deploy hook #{template_name.strip!} (#{max_tries} tries)..."
+      Run.kubectl "delete job deploy-hook --ignore-not-found=true"
+      Run.kubectl "set image cronjobs/deploy-hook-template deploy-hook-template=#{Config.get!(:image)}:#{revision} --all"
+      Run.kubectl "create job deploy-hook --from=#{template_name}"
+
+      deploy_status = Vidar::DeployStatus.new(namespace: Config.get!(:namespace), filter: "deploy-hook", max_tries:)
+      deploy_status.wait_until_up
+      deploy_status.wait_until_completed
+      deploy_status
     end
   end
 end
