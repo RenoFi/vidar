@@ -89,9 +89,11 @@ module Vidar
     method_option :destination, required: false, default: "deployments,cronjobs"
     method_option :container, required: false, default: "*"
     method_option :all, required: false, type: :boolean, default: true
+    method_option :max_tries, required: false, default: "30"
     def deploy
       revision = options[:revision] || Config.get!(:revision)
       kubectl_context = options[:kubectl_context] || Config.get!(:kubectl_context)
+      max_tries = options[:max_tries].to_i
       Log.info "Current kubectl context: #{kubectl_context}"
 
       Log.info "Looking for deploy hook..."
@@ -104,12 +106,12 @@ module Vidar
         if template_name.to_s.empty?
           Log.info "No deploy hook found"
         else
-          Log.info "Executing deploy hook #{template_name.strip!}..."
+          Log.info "Executing deploy hook #{template_name.strip!} (#{max_tries} tries)..."
           Run.kubectl "delete job deploy-hook --ignore-not-found=true"
           Run.kubectl "set image cronjobs/deploy-hook-template deploy-hook-template=#{Config.get!(:image)}:#{revision} --all"
           Run.kubectl "create job deploy-hook --from=#{template_name}"
 
-          deploy_status = Vidar::DeployStatus.new(namespace: Config.get!(:namespace), filter: "deploy-hook")
+          deploy_status = Vidar::DeployStatus.new(namespace: Config.get!(:namespace), filter: "deploy-hook", max_tries:)
           deploy_status.wait_until_up
           deploy_status.wait_until_completed
 
