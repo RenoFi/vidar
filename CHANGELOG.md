@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 1.13.0 - 2024-07-23
+
+Make docker compose command configurable and use `docker compose` instead `docker-compose` by default
+
+## 1.12.0 - 2024-07-09
+
+Make it possible to customize max_tries in monitor_deploy_status (#92)
+
 ## 1.11.0 - 2024-06-04
 
 Add set_image command.

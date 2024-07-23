@@ -5,6 +5,7 @@ module Vidar
 
     DEFAULT_OPTIONS = {
       compose_file:       -> { "docker-compose.ci.yml" },
+      compose_cmd:        -> { "docker compose" },
       default_branch:     -> { (DEFAULT_BRANCHES & branches).first || DEFAULT_BRANCHES.first },
       current_branch:     -> { (ENV['SEMAPHORE_GIT_WORKING_BRANCH'] || `git rev-parse --abbrev-ref HEAD`.strip).tr("/", "-") },
       revision:           -> { `git rev-parse HEAD`.strip },
