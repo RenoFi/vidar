@@ -97,7 +97,7 @@ module Vidar
       Log.info "Current kubectl context: #{kubectl_context}"
 
       Log.info "Looking for deploy hook..."
-      template_name, error, status = Open3.capture3 "kubectl get cronjob deploy-hook-template -n #{Config.get!(:namespace)} -o name --ignore-not-found=true"
+      template_name, error, status = Run.kubectl_capture3("get cronjob deploy-hook-template -o name --ignore-not-found=true")
 
       slack_notification = SlackNotification.get
       honeycomb_notification = HoneycombNotification.get
