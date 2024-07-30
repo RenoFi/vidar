@@ -39,20 +39,16 @@ RSpec.describe Vidar::SlackNotification do
             title: "RenoFi/vidar",
             title_link: "https://github.com/RenoFi/vidar/commit/059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd",
             color: "ff1100",
-            text: "Failed deploy of " \
+            text: "<!channel> Failed deploy of " \
                   "<https://github.com/RenoFi/vidar/commit/059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd|Release 1.0.0> " \
                   "to " \
                   "<https://console.cloud.google.com/kubernetes/workload?namespace=foo|staging>." \
                   "\n" \
-                  ":fire: <!channel>" \
-                  "\n" \
                   "<https://ci.company.com/builds/123|View the build.>",
-            fallback: "Failed deploy of " \
+            fallback: "<!channel> Failed deploy of " \
                       "<https://github.com/RenoFi/vidar/commit/059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd|Release 1.0.0> " \
                       "to " \
                       "<https://console.cloud.google.com/kubernetes/workload?namespace=foo|staging>." \
-                      "\n" \
-                      ":fire: <!channel>" \
                       "\n" \
                       "<https://ci.company.com/builds/123|View the build.>",
           }

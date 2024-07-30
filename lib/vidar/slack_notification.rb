@@ -30,9 +30,8 @@ module Vidar
 
     def failure
       message = [
-        "Failed deploy of #{github_link} to #{deploy_link}.",
-        ":fire: <!channel>",
-        build_link
+        "<!channel> Failed deploy of #{github_link} to #{deploy_link}.",
+        build_link,
       ]
       perform_with data(message:, color: failure_color)
     end
@@ -40,7 +39,7 @@ module Vidar
     def success
       message = [
         "Successful deploy of #{github_link} to #{deploy_link}.",
-        build_link
+        build_link,
       ]
       perform_with data(message:, color: success_color)
     end
