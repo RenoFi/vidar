@@ -22,12 +22,14 @@ module Vidar
     desc "pull", "Pull existing docker images to leverage docker caching"
     def pull
       Log.info "Pulling #{Config.get!(:image)} tags"
-      Run.docker "pull #{Config.get!(:image)}:#{Config.get!(:base_stage_name)}-#{Config.get!(:default_branch)} 2> /dev/null || true"
-      unless Config.default_branch?
-        Run.docker "pull #{Config.get!(:image)}:#{Config.get!(:base_stage_name)}-#{Config.get!(:current_branch)} 2> /dev/null || true"
-      end
+      Run.docker "pull #{Config.get!(:image)}:#{Config.get!(:base_stage_name)}-#{Config.get!(:current_branch)} 2> /dev/null || true"
+
+      docker_images = `docker images --format "{{.Repository}}:{{.Tag}}"`.split("\n")
+      base_image = "#{Config.get!(:image)}:#{Config.get!(:base_stage_name)}-#{Config.get!(:default_branch)}"
+      Run.docker "pull #{base_image} 2> /dev/null || true" unless docker_images.include?(base_image)
+
       Log.info "Docker images:"
-      Run.docker("images")
+      Log.info docker_images.join("\n")
     end
 
     desc "build_and_cache_base", "Build and caches base stage"
