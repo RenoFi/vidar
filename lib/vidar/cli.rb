@@ -22,10 +22,8 @@ module Vidar
     desc "pull", "Pull existing docker images to leverage docker caching"
     def pull
       Log.info "Pulling #{Config.get!(:image)} tags"
-      if Config.default_branch?
-        Run.docker "pull #{Config.get!(:image)}:#{Config.get!(:base_stage_name)}} 2> /dev/null || true"
-        Run.docker "pull #{Config.get!(:image)}:#{Config.get!(:base_stage_name)}-#{Config.get!(:default_branch)} 2> /dev/null || true"
-      else
+      Run.docker "pull #{Config.get!(:image)}:#{Config.get!(:base_stage_name)}-#{Config.get!(:default_branch)} 2> /dev/null || true"
+      unless Config.default_branch?
         Run.docker "pull #{Config.get!(:image)}:#{Config.get!(:base_stage_name)}-#{Config.get!(:current_branch)} 2> /dev/null || true"
       end
       Log.info "Docker images:"
