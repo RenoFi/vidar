@@ -1,5 +1,6 @@
 [![Gem Version](https://badge.fury.io/rb/vidar.svg)](https://rubygems.org/gems/vidar)
 [![Build Status](https://github.com/RenoFi/vidar/actions/workflows/ci.yml/badge.svg)](https://github.com/RenoFi/vidar/actions/workflows/ci.yml?query=branch%3Amain)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FRenoFi%2Fvidar.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FRenoFi%2Fvidar?ref=badge_shield)
 
 # vidar
 
@@ -122,3 +123,6 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/RenoFi
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FRenoFi%2Fvidar.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FRenoFi%2Fvidar?ref=badge_large)
