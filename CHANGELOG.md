@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.14.0 - 2025-04-05
+## 1.14.0 - 2025-02-05
 
 Ruby 3.4 support. Drop ruby 3.2 support.
 
