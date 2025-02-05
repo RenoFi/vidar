@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.14.0 - 2025-04-05
+
+Ruby 3.4 support. Drop ruby 3.2 support.
+
 ## 1.13.0 - 2024-07-23
 
 Make docker compose command configurable and use `docker compose` instead `docker-compose` by default
