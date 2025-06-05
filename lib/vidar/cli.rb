@@ -128,8 +128,8 @@ module Vidar
       destination = options[:destination]
       container = options[:container]
       all = options[:all]
-      Log.info "Set kubectl image for #{all ? 'all ' : ''}#{destination} container=#{container}..."
-      Run.kubectl "set image #{destination} #{container}=#{Config.get!(:image)}:#{revision} #{all ? '--all' : ''}"
+      Log.info "Set kubectl image for #{'all ' if all}#{destination} container=#{container}..."
+      Run.kubectl "set image #{destination} #{container}=#{Config.get!(:image)}:#{revision} #{'--all' if all}"
     end
 
     desc "set_image", "Set image for k8s deployment"
@@ -146,8 +146,8 @@ module Vidar
       destination = options[:destination]
       container = options[:container]
       all = options[:all]
-      Log.info "Set kubectl image for #{all ? 'all ' : ''}#{destination} container=#{container}..."
-      Run.kubectl "set image #{destination} #{container}=#{Config.get!(:image)}:#{revision} #{all ? '--all' : ''}"
+      Log.info "Set kubectl image for #{'all ' if all}#{destination} container=#{container}..."
+      Run.kubectl "set image #{destination} #{container}=#{Config.get!(:image)}:#{revision} #{'--all' if all}"
     end
 
     desc "release", "Build and publish docker images"
