@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.15.0 - 2025-06-23
+
+Don't stop watining and mark deployment as failed, when any container is still in a waiting state
+
 ## 1.14.0 - 2025-02-05
 
 Ruby 3.4 support. Drop ruby 3.2 support.

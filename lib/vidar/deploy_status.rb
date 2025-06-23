@@ -34,7 +34,7 @@ module Vidar
       until pod_set.deployed?
         tries += 1
         sleep(SLEEP)
-        if tries > max_tries
+        if tries > max_tries && !pod_set.waiting?
           break
         end
       end

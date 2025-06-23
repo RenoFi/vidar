@@ -10,6 +10,10 @@ module Vidar
         containers.any?
       end
 
+      def waiting?
+        containers.any?(&:waiting?)
+      end
+
       def deployed?
         if items.empty?
           Log.error "Could not fetch pod list"
