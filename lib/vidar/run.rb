@@ -11,16 +11,18 @@ module Vidar
       end
 
       def kubectl(command, namespace: Config.get!(:namespace))
-        system("#{kubectl_envs_string}kubectl --namespace=#{namespace} #{command}") || exit(1)
+        parts = [kubectl_envs_string, "kubectl", "-n", namespace].compact + command.split
+        system(parts.join(" ")) || exit(1)
       end
 
       def kubectl_capture3(command, namespace: Config.get!(:namespace))
-        Open3.capture3("#{kubectl_envs_string}kubectl #{command} --namespace=#{namespace}") || exit(1)
+        parts = [kubectl_envs_string, "kubectl", "-n", namespace].compact + command.split
+        Open3.capture3(parts.join(" ")) || exit(1)
       end
 
       def kubectl_envs_string
         https_proxy = Config.deploy_config.https_proxy
-        "HTTPS_PROXY=#{https_proxy} " if https_proxy
+        https_proxy ? "HTTPS_PROXY=#{https_proxy}" : nil
       end
     end
   end
