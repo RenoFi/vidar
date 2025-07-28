@@ -20,7 +20,7 @@ GEM
       bigdecimal
       rexml
     diff-lcs (1.6.2)
-    faraday (2.13.2)
+    faraday (2.13.4)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
@@ -110,4 +110,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.6.3
+   2.7.1
