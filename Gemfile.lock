@@ -27,18 +27,19 @@ GEM
     faraday-net_http (3.4.1)
       net-http (>= 0.5.0)
     hashdiff (1.2.1)
-    json (2.15.0)
+    json (2.15.2)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     logger (1.7.0)
     method_source (1.1.0)
     net-http (0.6.0)
       uri
+    openssl (3.3.2)
     parallel (1.27.0)
-    parser (3.3.9.0)
+    parser (3.3.10.0)
       ast (~> 2.4.1)
       racc
-    prism (1.5.1)
+    prism (1.6.0)
     pry (0.15.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -48,20 +49,20 @@ GEM
     rake (13.3.0)
     regexp_parser (2.11.3)
     rexml (3.4.4)
-    rspec (3.13.1)
+    rspec (3.13.2)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
       rspec-mocks (~> 3.13.0)
-    rspec-core (3.13.5)
+    rspec-core (3.13.6)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.5)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-mocks (3.13.5)
+    rspec-mocks (3.13.6)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.6)
-    rubocop (1.81.1)
+    rubocop (1.81.6)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -86,7 +87,7 @@ GEM
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
-    uri (1.0.3)
+    uri (1.0.4)
     webmock (3.26.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
@@ -98,6 +99,7 @@ PLATFORMS
 DEPENDENCIES
   awesome_print
   bundler
+  openssl
   pry
   rake
   rspec
@@ -108,4 +110,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.7.2
+   2.6.9
