@@ -13,8 +13,4 @@ gem 'rubocop-rake'
 gem 'rubocop-rspec'
 gem 'webmock'
 
-if RUBY_VERSION.start_with?('3.')
-  gem 'openssl', '~> 3.2'
-else
-  gem 'openssl'
-end
+gem 'openssl'
