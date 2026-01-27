@@ -22,7 +22,12 @@ require 'vidar/deploy_status'
 require 'vidar/cli'
 
 module Vidar
-  Error = Class.new(StandardError)
-  MissingConfigError = Class.new(StandardError)
-  MissingManifestFileError = Class.new(StandardError)
+  class Error < StandardError
+  end
+
+  class MissingConfigError < StandardError
+  end
+
+  class MissingManifestFileError < StandardError
+  end
 end
