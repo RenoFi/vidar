@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    vidar (1.15.1)
+    vidar (1.16.0)
       colorize
       faraday
       thor (~> 1.0)
@@ -133,4 +133,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-  4.0.3
+  4.0.4

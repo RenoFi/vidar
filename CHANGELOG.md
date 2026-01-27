@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.16.0 - 2026-01-27
+
+Ruby 4.0 support. Drop ruby 3.3 support.
+
 ## 1.15.0 - 2025-06-23
 
 Don't stop watining and mark deployment as failed, when any container is still in a waiting state
