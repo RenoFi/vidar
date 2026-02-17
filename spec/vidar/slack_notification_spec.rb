@@ -1,11 +1,11 @@
 RSpec.describe Vidar::SlackNotification do
   subject do
     described_class.new(
-      github:        "RenoFi/vidar",
-      revision:      "059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd",
+      github: "RenoFi/vidar",
+      revision: "059082da8b8733d46a9a9a3d82e3a7afa8cf8cbd",
       revision_name: "Release 1.0.0",
-      build_url:     "https://ci.company.com/builds/123",
-      deploy_config:,
+      build_url: "https://ci.company.com/builds/123",
+      deploy_config:
     )
   end
 
@@ -16,7 +16,8 @@ RSpec.describe Vidar::SlackNotification do
     Vidar::DeployConfig.new(
       name: "staging",
       url: "https://console.cloud.google.com/kubernetes/workload?namespace=foo",
-      slack_webhook_url: webhook_url)
+      slack_webhook_url: webhook_url
+    )
   end
 
   describe "#configured?" do
@@ -50,7 +51,7 @@ RSpec.describe Vidar::SlackNotification do
                       "to " \
                       "<https://console.cloud.google.com/kubernetes/workload?namespace=foo|staging>." \
                       "\n" \
-                      "<https://ci.company.com/builds/123|View the build.>",
+                      "<https://ci.company.com/builds/123|View the build.>"
           }
         ]
       }
@@ -58,7 +59,7 @@ RSpec.describe Vidar::SlackNotification do
 
     specify do
       stub_request(:post, "https://slack.local/fake")
-        .with(body: expected_data.to_json, headers: { "Content-Type" => "application/json" })
+        .with(body: expected_data.to_json, headers: {"Content-Type" => "application/json"})
       expect(subject.failure).to be_a(Faraday::Response)
     end
   end
@@ -89,7 +90,7 @@ RSpec.describe Vidar::SlackNotification do
 
     specify do
       stub_request(:post, "https://slack.local/fake")
-        .with(body: expected_data.to_json, headers: { "Content-Type" => "application/json" })
+        .with(body: expected_data.to_json, headers: {"Content-Type" => "application/json"})
       expect(subject.success).to be_a(Faraday::Response)
     end
   end

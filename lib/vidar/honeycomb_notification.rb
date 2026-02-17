@@ -2,12 +2,12 @@ module Vidar
   class HoneycombNotification
     def self.get
       new(
-        github:        Config.get!(:github),
-        revision:      Config.get!(:revision),
+        github: Config.get!(:github),
+        revision: Config.get!(:revision),
         revision_name: Config.get!(:revision_name),
-        build_url:     Config.build_url,
+        build_url: Config.build_url,
         deploy_config: Config.deploy_config,
-        api_key: Config.get(:honeycomb_api_key),
+        api_key: Config.get(:honeycomb_api_key)
       )
     end
 
@@ -68,8 +68,8 @@ module Vidar
 
       response = connection.post do |req|
         req.url "https://api.honeycomb.io/1/markers/#{dataset}"
-        req.headers['Content-Type'] = 'application/json'
-        req.headers['X-Honeycomb-Team'] = api_key.to_s
+        req.headers["Content-Type"] = "application/json"
+        req.headers["X-Honeycomb-Team"] = api_key.to_s
         req.body = data.to_json
       end
 
@@ -84,8 +84,8 @@ module Vidar
 
       response = connection.post do |req|
         req.url "https://api.honeycomb.io/1/markers/__all__"
-        req.headers['Content-Type'] = 'application/json'
-        req.headers['X-Honeycomb-Team'] = Config.honeycomb_env_api_key(dataset).to_s
+        req.headers["Content-Type"] = "application/json"
+        req.headers["X-Honeycomb-Team"] = Config.honeycomb_env_api_key(dataset).to_s
         req.body = data.to_json
       end
 
@@ -97,11 +97,11 @@ module Vidar
 
     def data
       {
-        message: "#{success? ? 'Successful' : 'Failed'} deploy of #{github} revision #{revision} - #{revision_name}",
+        message: "#{success? ? "Successful" : "Failed"} deploy of #{github} revision #{revision} - #{revision_name}",
         type: success? ? "deploy" : "failed_deploy",
         start_time: start_time.to_i,
         end_time: end_time.to_i,
-        url: build_url,
+        url: build_url
       }
     end
   end

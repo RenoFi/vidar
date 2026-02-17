@@ -2,10 +2,10 @@ module Vidar
   class SlackNotification
     def self.get
       new(
-        github:        Config.get!(:github),
-        revision:      Config.get!(:revision),
+        github: Config.get!(:github),
+        revision: Config.get!(:revision),
         revision_name: Config.get!(:revision_name),
-        build_url:     Config.build_url,
+        build_url: Config.build_url,
         deploy_config: Config.deploy_config
       )
     end
@@ -31,7 +31,7 @@ module Vidar
     def failure
       message = [
         "<!channel> Failed deploy of #{github_link} to #{deploy_link}.",
-        build_link,
+        build_link
       ]
       perform_with data(message:, color: failure_color)
     end
@@ -39,7 +39,7 @@ module Vidar
     def success
       message = [
         "Successful deploy of #{github_link} to #{deploy_link}.",
-        build_link,
+        build_link
       ]
       perform_with data(message:, color: success_color)
     end
@@ -51,7 +51,7 @@ module Vidar
     def perform_with(data)
       connection.post do |req|
         req.url webhook_url
-        req.headers['Content-Type'] = 'application/json'
+        req.headers["Content-Type"] = "application/json"
         req.body = data.to_json
       end
     end
@@ -72,7 +72,7 @@ module Vidar
             title_link: github_url,
             color:,
             text:,
-            fallback: text,
+            fallback: text
           }
         ]
       }

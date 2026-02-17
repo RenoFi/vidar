@@ -46,7 +46,7 @@ module Vidar
         parts << namespace.to_s.ljust(20, " ")
         parts << name.to_s.ljust(35, " ")
         parts += text_statuses.map { |s| s.ljust(45, " ") }
-        "| #{parts.join(' | ')} |"
+        "| #{parts.join(" | ")} |"
       end
 
       def text_statuses

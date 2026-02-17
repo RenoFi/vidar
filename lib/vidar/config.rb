@@ -4,18 +4,18 @@ module Vidar
     DEFAULT_BRANCHES = %w[main master].freeze
 
     DEFAULT_OPTIONS = {
-      compose_file:       -> { "docker-compose.ci.yml" },
-      compose_cmd:        -> { "docker compose" },
-      default_branch:     -> { (DEFAULT_BRANCHES & branches).first || DEFAULT_BRANCHES.first },
-      current_branch:     -> { (ENV['SEMAPHORE_GIT_WORKING_BRANCH'] || `git rev-parse --abbrev-ref HEAD`.strip).tr("/", "-") },
-      revision:           -> { `git rev-parse HEAD`.strip },
-      revision_name:      -> { `git show --pretty=format:"%s (%h)" -s HEAD`.strip },
-      kubectl_context:    -> { `kubectl config current-context`.strip },
-      shell_command:      -> { "/bin/sh" },
-      console_command:    -> { "bin/console" },
-      base_stage_name:    -> { "base" },
+      compose_file: -> { "docker-compose.ci.yml" },
+      compose_cmd: -> { "docker compose" },
+      default_branch: -> { (DEFAULT_BRANCHES & branches).first || DEFAULT_BRANCHES.first },
+      current_branch: -> { (ENV["SEMAPHORE_GIT_WORKING_BRANCH"] || `git rev-parse --abbrev-ref HEAD`.strip).tr("/", "-") },
+      revision: -> { `git rev-parse HEAD`.strip },
+      revision_name: -> { `git show --pretty=format:"%s (%h)" -s HEAD`.strip },
+      kubectl_context: -> { `kubectl config current-context`.strip },
+      shell_command: -> { "/bin/sh" },
+      console_command: -> { "bin/console" },
+      base_stage_name: -> { "base" },
       release_stage_name: -> { "release" },
-      honeycomb_api_key:  -> { ENV['HONEYCOMB_API_KEY'] },
+      honeycomb_api_key: -> { ENV["HONEYCOMB_API_KEY"] }
     }.freeze
 
     class << self

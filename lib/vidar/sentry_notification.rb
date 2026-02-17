@@ -13,7 +13,7 @@ module Vidar
     def call
       connection.post do |req|
         req.url webhook_url
-        req.headers['Content-Type'] = 'application/json'
+        req.headers["Content-Type"] = "application/json"
         req.body = data.to_json
       end
     end

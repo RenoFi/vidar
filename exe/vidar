@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'vidar'
+require "vidar"
 
 Vidar::CLI.start

@@ -5,11 +5,11 @@ RSpec.describe Vidar::Interpolation do
     let(:string) { "http://github.local/{{github}}/{{namespace}}/{{foo}}/{{}}/{{FOOBAR}}/{{FOOBAR2}}" }
 
     before do
-      ENV['FOOBAR'] = 'boomboom'
+      ENV["FOOBAR"] = "boomboom"
     end
 
     after do
-      ENV['FOOBAR'] = nil
+      ENV["FOOBAR"] = nil
     end
 
     specify do

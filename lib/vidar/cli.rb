@@ -128,8 +128,8 @@ module Vidar
       destination = options[:destination]
       container = options[:container]
       all = options[:all]
-      Log.info "Set kubectl image for #{'all ' if all}#{destination} container=#{container}..."
-      Run.kubectl "set image #{destination} #{container}=#{Config.get!(:image)}:#{revision} #{'--all' if all}"
+      Log.info "Set kubectl image for #{"all " if all}#{destination} container=#{container}..."
+      Run.kubectl "set image #{destination} #{container}=#{Config.get!(:image)}:#{revision} #{"--all" if all}"
     end
 
     desc "set_image", "Set image for k8s deployment"
@@ -146,8 +146,8 @@ module Vidar
       destination = options[:destination]
       container = options[:container]
       all = options[:all]
-      Log.info "Set kubectl image for #{'all ' if all}#{destination} container=#{container}..."
-      Run.kubectl "set image #{destination} #{container}=#{Config.get!(:image)}:#{revision} #{'--all' if all}"
+      Log.info "Set kubectl image for #{"all " if all}#{destination} container=#{container}..."
+      Run.kubectl "set image #{destination} #{container}=#{Config.get!(:image)}:#{revision} #{"--all" if all}"
     end
 
     desc "release", "Build and publish docker images"
@@ -201,13 +201,13 @@ module Vidar
       containers = pod_set.containers.select(&:ready_and_running?).reject(&:istio?)
 
       if containers.empty?
-        name = options[:name] || 'any'
+        name = options[:name] || "any"
         Log.error "No running containers found with *#{name}* name"
         exit(1)
       else
         Log.info "Available containers:"
         containers.each(&:print)
-        container = containers.detect { |c| c.name == 'console' } || containers.last
+        container = containers.detect { |c| c.name == "console" } || containers.last
 
         Log.info "Running #{options[:command]} in #{container.pod_name}"
         Run.kubectl("exec -it #{container.pod_name} -- #{options[:command]}")
@@ -232,7 +232,7 @@ module Vidar
     desc "notify_sentry", "Notify sentry about current release"
     def notify_sentry
       sentry_notification = SentryNotification.new(
-        revision:      Config.get!(:revision),
+        revision: Config.get!(:revision),
         deploy_config: Config.deploy_config
       )
 
@@ -248,10 +248,10 @@ module Vidar
     desc "notify_slack", "Send custom slack notification"
     def notify_slack
       slack_notification = SlackNotification.new(
-        github:        Config.get!(:github),
-        revision:      Config.get!(:revision),
+        github: Config.get!(:github),
+        revision: Config.get!(:revision),
         revision_name: Config.get!(:revision_name),
-        build_url:     Config.build_url,
+        build_url: Config.build_url,
         deploy_config: Config.deploy_config
       )
 

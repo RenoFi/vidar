@@ -7,7 +7,7 @@ module Vidar
 
       def docker_compose(command)
         args = %w[revision current_branch].map { |arg| "#{arg.upcase}=#{Config.get!(arg.to_sym)}" }
-        system("#{args.join(' ')} #{Config.get!(:compose_cmd)} -f #{Config.get!(:compose_file)} #{command}") || exit(1)
+        system("#{args.join(" ")} #{Config.get!(:compose_cmd)} -f #{Config.get!(:compose_file)} #{command}") || exit(1)
       end
 
       def kubectl(command, namespace: Config.get!(:namespace))
@@ -24,7 +24,7 @@ module Vidar
       end
 
       def kubectl_envs_hash
-        { "HTTPS_PROXY" => Config.deploy_config.https_proxy }.compact
+        {"HTTPS_PROXY" => Config.deploy_config.https_proxy}.compact
       end
     end
   end
