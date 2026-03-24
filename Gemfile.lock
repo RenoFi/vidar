@@ -3,7 +3,7 @@ PATH
   specs:
     vidar (1.16.0)
       colorize
-      faraday
+      faraday (>= 2.0, < 3)
       thor (~> 1.0)
 
 GEM

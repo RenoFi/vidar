@@ -54,6 +54,9 @@ module Vidar
         req.headers["Content-Type"] = "application/json"
         req.body = data.to_json
       end
+    rescue Faraday::Error => e
+      warn "Slack notification request failed: #{e.message}"
+      nil
     end
 
     private

@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## 1.17.0 - 2026-03-24
+
+- Replace backtick shell calls with `Open3.capture3` for safer command execution
+- Add `rescue JSON::ParserError` in `K8s::PodSet` to handle malformed kubectl output gracefully
+- Fix `terminated_error?` returning truthy for exit code 0
+- Add `Unknown` state label for containers with unrecognized state
+- Add `sidecar?` method and `sidecar_container_names` config key for configurable sidecar filtering (replaces hardcoded istio-proxy)
+- Add `rescue Faraday::Error` to all notification classes to prevent network errors from crashing deploys
+- Simplify `DeployStatus` polling loops and remove off-by-one in max_tries
+- Add `vidar.yml` schema validation on load (requires `image`, `namespace`, `github`)
+- Pin faraday dependency to `>= 2.0, < 3`
+- Add YARD documentation to all public classes and methods
+- Expand test coverage from 18 to 148 examples
+
 ## 1.16.0 - 2026-01-27
 
 Ruby 4.0 support. Drop ruby 3.3 support.

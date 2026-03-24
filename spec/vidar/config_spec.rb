@@ -7,6 +7,91 @@ RSpec.describe Vidar::Config do
     end
   end
 
+  describe "schema validation" do
+    let(:tmp_file) { Tempfile.new(["vidar", ".yml"]) }
+
+    after { tmp_file.unlink }
+
+    context "when a required key is missing" do
+      before { tmp_file.write({"namespace" => "x", "github" => "x"}.to_yaml) && tmp_file.flush }
+
+      it "raises an error listing the missing key" do
+        expect { described_class.load(tmp_file.path) }.to raise_error(Vidar::Error, /image/)
+      end
+    end
+
+    context "when deployments is not a Hash" do
+      before { tmp_file.write({"image" => "x", "namespace" => "x", "github" => "x", "deployments" => "bad"}.to_yaml) && tmp_file.flush }
+
+      it "raises an error" do
+        expect { described_class.load(tmp_file.path) }.to raise_error(Vidar::Error, /deployments/)
+      end
+    end
+
+    context "when a deployment entry is missing name" do
+      before do
+        tmp_file.write({"image" => "x", "namespace" => "x", "github" => "x", "deployments" => {"ctx" => {"url" => "http://x"}}}.to_yaml)
+        tmp_file.flush
+      end
+
+      it "raises an error" do
+        expect { described_class.load(tmp_file.path) }.to raise_error(Vidar::Error, /name/)
+      end
+    end
+  end
+
+  describe ".honeycomb_env_api_key" do
+    before { ENV["HONEYCOMB_API_KEY_STAGING"] = "secret" }
+    after { ENV.delete("HONEYCOMB_API_KEY_STAGING") }
+
+    it "returns the env var for the given environment" do
+      expect(described_class.honeycomb_env_api_key("staging")).to eq("secret")
+    end
+
+    it "returns nil when env var is not set" do
+      expect(described_class.honeycomb_env_api_key("production")).to be_nil
+    end
+  end
+
+  describe ".deploy_config" do
+    before { described_class.instance_variable_set(:@deploy_configs, {}) }
+
+    context "when a matching deployment context exists" do
+      before do
+        described_class.instance_variable_set(:@data, {
+          "image" => "my-app",
+          "namespace" => "staging",
+          "github" => "org/repo",
+          "deployments" => {
+            "test-context" => {"name" => "Staging", "url" => "https://k8s.example.com"}
+          }
+        })
+        allow(described_class).to receive(:get!).with(:kubectl_context).and_return("test-context")
+      end
+
+      it "returns a DeployConfig" do
+        expect(described_class.deploy_config).to be_a(Vidar::DeployConfig)
+      end
+
+      it "has the correct name" do
+        expect(described_class.deploy_config.name).to eq("Staging")
+      end
+    end
+
+    context "when no matching deployment context is found" do
+      before do
+        described_class.instance_variable_set(:@data, {
+          "image" => "x", "namespace" => "x", "github" => "x"
+        })
+        allow(described_class).to receive(:get!).with(:kubectl_context).and_return("unknown-context")
+      end
+
+      it "returns nil and logs an error" do
+        expect { described_class.deploy_config }.to output(/could not find deployment config/).to_stdout
+      end
+    end
+  end
+
   describe ".manifest_file" do
     specify do
       expect(described_class.manifest_file).to eq("vidar.yml")

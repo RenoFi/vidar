@@ -77,6 +77,9 @@ module Vidar
 
       warn "Honeycomb marker not created: status: #{response.status} response: #{response.body}"
       false
+    rescue Faraday::Error => e
+      warn "Honeycomb legacy marker request failed: #{e.message}"
+      false
     end
 
     def create_marker
@@ -92,6 +95,9 @@ module Vidar
       return true if response.status == 201
 
       warn "Honeycomb marker not created: status: #{response.status} response: #{response.body}"
+      false
+    rescue Faraday::Error => e
+      warn "Honeycomb env marker request failed: #{e.message}"
       false
     end
 

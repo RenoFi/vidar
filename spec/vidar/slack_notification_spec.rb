@@ -64,6 +64,44 @@ RSpec.describe Vidar::SlackNotification do
     end
   end
 
+  describe "#deliver" do
+    it "posts a custom message" do
+      stub = stub_request(:post, "https://slack.local/fake")
+        .with(headers: {"Content-Type" => "application/json"})
+        .to_return(status: 200)
+
+      subject.deliver(message: "Custom message", color: "aabbcc")
+
+      expect(stub).to have_been_requested
+    end
+
+    it "uses the default color when none is specified" do
+      stub = stub_request(:post, "https://slack.local/fake").to_return(status: 200)
+
+      subject.deliver(message: "Custom message")
+
+      expect(stub).to have_been_requested
+    end
+  end
+
+  describe "when a network error occurs" do
+    before do
+      stub_request(:post, "https://slack.local/fake").to_raise(Faraday::ConnectionFailed.new("refused"))
+    end
+
+    it "does not raise" do
+      expect { subject.failure }.not_to raise_error
+    end
+
+    it "returns nil" do
+      expect(subject.failure).to be_nil
+    end
+
+    it "warns about the failure" do
+      expect { subject.failure }.to output(/Slack notification request failed/).to_stderr
+    end
+  end
+
   describe "#success" do
     let(:expected_data) do
       {

@@ -24,7 +24,8 @@ module Vidar
       Log.info "Pulling #{Config.get!(:image)} tags"
       Run.docker "pull #{Config.get!(:image)}:#{Config.get!(:base_stage_name)}-#{Config.get!(:current_branch)} 2> /dev/null || true"
 
-      image_names = `docker images --format "{{.Repository}}:{{.Tag}}"`.split("\n")
+      image_names_stdout, _stderr, _status = Open3.capture3('docker images --format "{{.Repository}}:{{.Tag}}"')
+      image_names = image_names_stdout.split("\n")
       base_image = "#{Config.get!(:image)}:#{Config.get!(:base_stage_name)}-#{Config.get!(:default_branch)}"
       Run.docker "pull #{base_image} 2> /dev/null || true" unless image_names.include?(base_image)
 
@@ -198,7 +199,8 @@ module Vidar
       Log.error "ERROR: could not find deployment config for #{Config.get!(:kubectl_context)} context" unless deploy_config
 
       pod_set = K8s::PodSet.new(namespace: Config.get!(:namespace), filter: options[:name])
-      containers = pod_set.containers.select(&:ready_and_running?).reject(&:istio?)
+      sidecar_names = Array(Config.get(:sidecar_container_names))
+      containers = pod_set.containers.select(&:ready_and_running?).reject { |c| c.sidecar?(sidecar_names) }
 
       if containers.empty?
         name = options[:name] || "any"
