@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.17.1 - 2026-05-19
+
+- Fix `monitor_deploy_status` failing the deploy promotion when `--max_tries` is passed: Thor's `invoke :notify_sentry` was forwarding the parent task's ARGV as positional args. Pass explicit empty args/options to scope the sub-invocation.
+
 ## 1.17.0 - 2026-03-24
 
 - Replace backtick shell calls with `Open3.capture3` for safer command execution
