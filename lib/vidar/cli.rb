@@ -179,7 +179,7 @@ module Vidar
         Log.info "OK: All containers are ready"
         slack_notification.success if slack_notification.configured?
         honeycomb_notification.success
-        invoke :notify_sentry
+        invoke :notify_sentry, [], {}
       else
         Log.error "ERROR: Some of containers are errored or not ready"
         slack_notification.failure if slack_notification.configured?
