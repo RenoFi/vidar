@@ -12,16 +12,8 @@ RSpec.describe Vidar::Config do
 
     after { tmp_file.unlink }
 
-    context "when a required key is missing" do
-      before { tmp_file.write({"namespace" => "x", "github" => "x"}.to_yaml) && tmp_file.flush }
-
-      it "raises an error listing the missing key" do
-        expect { described_class.load(tmp_file.path) }.to raise_error(Vidar::Error, /image/)
-      end
-    end
-
     context "when deployments is not a Hash" do
-      before { tmp_file.write({"image" => "x", "namespace" => "x", "github" => "x", "deployments" => "bad"}.to_yaml) && tmp_file.flush }
+      before { tmp_file.write({"namespace" => "x", "github" => "x", "deployments" => "bad"}.to_yaml) && tmp_file.flush }
 
       it "raises an error" do
         expect { described_class.load(tmp_file.path) }.to raise_error(Vidar::Error, /deployments/)
@@ -30,7 +22,7 @@ RSpec.describe Vidar::Config do
 
     context "when a deployment entry is missing name" do
       before do
-        tmp_file.write({"image" => "x", "namespace" => "x", "github" => "x", "deployments" => {"ctx" => {"url" => "http://x"}}}.to_yaml)
+        tmp_file.write({"namespace" => "x", "github" => "x", "deployments" => {"ctx" => {"url" => "http://x"}}}.to_yaml)
         tmp_file.flush
       end
 

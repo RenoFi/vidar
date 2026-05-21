@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.17.2 - 2026-05-21
+
+- Remove required key validation from `vidar.yml` — config loads without requiring any top-level keys; deployments structure is still validated
+
 ## 1.17.1 - 2026-05-19
 
 - Fix `monitor_deploy_status` failing the deploy promotion when `--max_tries` is passed: Thor's `invoke :notify_sentry` was forwarding the parent task's ARGV as positional args. Pass explicit empty args/options to scope the sub-invocation.
