@@ -4,8 +4,6 @@ module Vidar
   class Config
     DEFAULT_MANIFEST_FILE = "vidar.yml".freeze
     DEFAULT_BRANCHES = %w[main master].freeze
-    REQUIRED_KEYS = %w[image namespace github].freeze
-
     DEFAULT_OPTIONS = {
       compose_file: -> { "docker-compose.ci.yml" },
       compose_cmd: -> { "docker compose" },
@@ -26,10 +24,8 @@ module Vidar
       attr_reader :data
       attr_writer :manifest_file
 
-      # Loads the manifest file and validates required keys.
       # @param file_path [String] path to vidar.yml
       # @raise [MissingManifestFileError] if the file does not exist
-      # @raise [Error] if required keys are missing or schema is invalid
       def load(file_path = manifest_file)
         ensure_file_exist!(file_path)
 
@@ -122,9 +118,6 @@ module Vidar
       private
 
       def validate_schema!
-        missing = REQUIRED_KEYS.reject { |k| @data.key?(k) }
-        fail(Error, "vidar.yml is missing required keys: #{missing.join(", ")}") if missing.any?
-
         deployments = @data["deployments"]
         fail(Error, "vidar.yml: 'deployments' must be a Hash, got #{deployments.class}") if deployments && !deployments.is_a?(Hash)
 
