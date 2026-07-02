@@ -8,7 +8,7 @@ module Vidar
       compose_file: -> { "docker-compose.ci.yml" },
       compose_cmd: -> { "docker compose" },
       default_branch: -> { (DEFAULT_BRANCHES & branches).first || DEFAULT_BRANCHES.first },
-      current_branch: -> { (ENV["SEMAPHORE_GIT_WORKING_BRANCH"] || shell_capture("git rev-parse --abbrev-ref HEAD")).gsub(/[^a-zA-Z0-9_.]+/, "-").gsub(/\A-|-\z/, "") },
+      current_branch: -> { (ENV["SEMAPHORE_GIT_WORKING_BRANCH"] || shell_capture("git rev-parse --abbrev-ref HEAD")).gsub(/[^a-zA-Z0-9_]+/, "-").gsub(/\A-|-\z/, "") },
       revision: -> { shell_capture("git rev-parse HEAD") },
       revision_name: -> { shell_capture('git show --pretty=format:"%s (%h)" -s HEAD') },
       kubectl_context: -> { shell_capture("kubectl config current-context") },
