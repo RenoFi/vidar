@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.17.3 - 2026-07-02
+
+- Sanitize all characters invalid in docker image tags in `current_branch`: any run of characters outside `[a-zA-Z0-9_]` (previously only `/`) is replaced with a single `-`, and leading/trailing dashes are stripped
+
 ## 1.17.2 - 2026-05-21
 
 - Remove required key validation from `vidar.yml` — config loads without requiring any top-level keys; deployments structure is still validated
