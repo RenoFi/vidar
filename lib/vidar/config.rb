@@ -70,7 +70,7 @@ module Vidar
       # @return [String, nil] CI build URL resolved from env or manifest
       def build_url
         value = ENV[get(:build_env).to_s] || get(:build_url)
-        value&.empty? ? nil : value
+        (value && value.empty?) ? nil : value
       end
 
       # @param env [String] environment name (maps to HONEYCOMB_API_KEY_<ENV>)
